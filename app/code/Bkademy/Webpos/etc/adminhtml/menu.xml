@@ -7,8 +7,17 @@
   -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
-        <add id="Bkademy_Webpos::checkout" title="POS Checkout" module="Bkademy_Webpos"
-             sortOrder="10" resource="Bkademy_Webpos::checkout"
+        <add id="Bkademy_Webpos::webpos"
+             title="Web POS"
+             module="Bkademy_Webpos"
+             sortOrder="10"
+             resource="Bkademy_Webpos::webpos" />
+        <add id="Bkademy_Webpos::checkout"
+             title="Checkout"
+             module="Bkademy_Webpos"
+             sortOrder="10"
+             resource="Bkademy_Webpos::checkout"
+             parent="Bkademy_Webpos::webpos"
              action="webpos/index/index"/>
     </menu>
 </config>
