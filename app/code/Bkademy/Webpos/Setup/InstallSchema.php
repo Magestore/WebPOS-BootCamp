@@ -56,47 +56,17 @@ class InstallSchema implements InstallSchemaInterface
                 ['nullable' => false, 'default' => ''],
                 'email'
             )->addColumn(
-                'monthly_target',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                null,
-                ['nullable' => false, 'default' => ''],
-                'monthly_target'
-            )->addColumn(
                 'customer_group',
                 \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
                 null,
                 ['nullable' => false, 'default' => ''],
                 'customer_group'
             )->addColumn(
-                'location_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-                null,
-                ['nullable' => false, 'default' => 0],
-                'location_id'
-            )->addColumn(
-                'role_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-                null,
-                ['nullable' => false, 'default' => 0],
-                'role_id'
-            )->addColumn(
                 'status',
                 \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
                 null,
                 ['nullable' => false, 'default' => 0],
                 'status'
-            )->addColumn(
-                'auto_logout',
-                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-                null,
-                ['nullable' => false, 'default' => 0],
-                'auto_logout'
-            )->addColumn(
-                'can_use_sales_report',
-                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-                null,
-                ['nullable' => false, 'default' => 0],
-                'can_use_sales_report'
             );
 
             $installer->getConnection()->createTable($table);
