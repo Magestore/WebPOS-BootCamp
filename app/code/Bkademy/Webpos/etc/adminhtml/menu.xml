@@ -10,7 +10,7 @@
         <add id="Bkademy_Webpos::webpos"
              title="Web POS"
              module="Bkademy_Webpos"
-             sortOrder="10"
+             sortOrder="50"
              resource="Bkademy_Webpos::webpos" />
         <add id="Bkademy_Webpos::checkout"
              title="Checkout"
