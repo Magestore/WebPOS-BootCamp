@@ -1,47 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-/**
- * Magestore
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Magestore.com license that is
- * available through the world-wide-web at this URL:
- * http://www.magestore.com/license-agreement.html
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade this extension to newer
- * version in the future.
- *
- * @category    Magestore
- * @package     Magestore_Promotionalgift
- * @copyright   Copyright (c) 2012 Magestore (http://www.magestore.com/)
- * @license     http://www.magestore.com/license-agreement.html
- */
--->
 <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
-            <item name="provider" xsi:type="string">wepos_staff_listing.wepos_staff_listing_data_source</item>
-            <item name="deps" xsi:type="string">wepos_staff_listing.wepos_staff_listing_data_source</item>
+            <item name="provider" xsi:type="string">webpos_staff_listing.webpos_staff_listing_data_source</item>
+            <item name="deps" xsi:type="string">webpos_staff_listing.webpos_staff_listing_data_source</item>
         </item>
-        <item name="spinner" xsi:type="string">wepos_staff_listing</item>
+        <item name="spinner" xsi:type="string">webpos_staff_columns</item>
         <item name="buttons" xsi:type="array">
             <item name="add" xsi:type="array">
                 <item name="name" xsi:type="string">add</item>
-                <item name="label" xsi:type="string" translate="true">Add Rule</item>
+                <item name="label" xsi:type="string" translate="true">Add Staff</item>
                 <item name="class" xsi:type="string">primary</item>
                 <item name="url" xsi:type="string">*/*/new</item>
             </item>
         </item>
     </argument>
-    <dataSource name="wepos_staff_listing_data_source">
+    <dataSource name="webpos_staff_listing_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
             <argument name="class" xsi:type="string">Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider</argument>
-            <argument name="name" xsi:type="string">wepos_staff_listing_data_source</argument>
+            <argument name="name" xsi:type="string">webpos_staff_listing_data_source</argument>
             <argument name="primaryFieldName" xsi:type="string">entity_id</argument>
-            <argument name="requestFieldName" xsi:type="string">rule_id</argument>
+            <argument name="requestFieldName" xsi:type="string">staff_id</argument>
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="update_url" xsi:type="url" path="mui/index/render"/>
@@ -64,29 +43,36 @@
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="storageConfig" xsi:type="array">
-                        <item name="namespace" xsi:type="string">wepos_staff_listing</item>
+                        <item name="namespace" xsi:type="string">webpos_staff_listing</item>
                     </item>
                 </item>
             </argument>
         </bookmark>
-        <container name="columns_controls">
+        <exportButton name="export_button">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="selectProvider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.webpos_staff_columns.ids</item>
+                </item>
+            </argument>
+        </exportButton>
+        <component name="columns_controls">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="columnsData" xsi:type="array">
-                        <item name="provider" xsi:type="string">wepos_staff_listing.wepos_staff_listing.wepos_staff_listing</item>
+                        <item name="provider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.webpos_staff_columns</item>
                     </item>
                     <item name="component" xsi:type="string">Magento_Ui/js/grid/controls/columns</item>
                     <item name="displayArea" xsi:type="string">dataGridActions</item>
                 </item>
             </argument>
-        </container>
+        </component>
         <!--<filterSearch name="fulltext">-->
             <!--<argument name="data" xsi:type="array">-->
                 <!--<item name="config" xsi:type="array">-->
-                    <!--<item name="provider" xsi:type="string">wepos_staff_listing.wepos_staff_listing_data_source</item>-->
-                    <!--<item name="chipsProvider" xsi:type="string">wepos_staff_listing.wepos_staff_listing.listing_top.listing_filters_chips</item>-->
+                    <!--<item name="provider" xsi:type="string">webpos_staff_listing.webpos_staff_listing_data_source</item>-->
+                    <!--<item name="chipsProvider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.listing_top.listing_filters_chips</item>-->
                     <!--<item name="storageConfig" xsi:type="array">-->
-                        <!--<item name="provider" xsi:type="string">wepos_staff_listing.wepos_staff_listing.listing_top.bookmarks</item>-->
+                        <!--<item name="provider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.listing_top.bookmarks</item>-->
                         <!--<item name="namespace" xsi:type="string">current.search</item>-->
                     <!--</item>-->
                 <!--</item>-->
@@ -95,9 +81,9 @@
         <filters name="listing_filters">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="columnsProvider" xsi:type="string">wepos_staff_listing.wepos_staff_listing.wepos_staff_listing</item>
+                    <item name="columnsProvider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.webpos_staff_listing</item>
                     <item name="storageConfig" xsi:type="array">
-                        <item name="provider" xsi:type="string">wepos_staff_listing.wepos_staff_listing.listing_top.bookmarks</item>
+                        <item name="provider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.listing_top.bookmarks</item>
                         <item name="namespace" xsi:type="string">current.filters</item>
                     </item>
                     <item name="templates" xsi:type="array">
@@ -109,9 +95,9 @@
                         </item>
                     </item>
                     <item name="childDefaults" xsi:type="array">
-                        <item name="provider" xsi:type="string">wepos_staff_listing.wepos_staff_listing.listing_top.listing_filters</item>
+                        <item name="provider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.listing_top.listing_filters</item>
                         <item name="imports" xsi:type="array">
-                            <item name="visible" xsi:type="string">wepos_staff_listing.wepos_staff_listing.wepos_staff_listing.${ $.index }:visible</item>
+                            <item name="visible" xsi:type="string">webpos_staff_listing.webpos_staff_listing.webpos_staff_listing.${ $.index }:visible</item>
                         </item>
                     </item>
                 </item>
@@ -120,11 +106,40 @@
         <massaction name="listing_massaction">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="selectProvider" xsi:type="string">wepos_staff_listing.wepos_staff_listing.wepos_staff_listing.ids</item>
+                    <item name="selectProvider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.webpos_staff_columns.ids</item>
                     <item name="displayArea" xsi:type="string">bottom</item>
-                    <item name="indexField" xsi:type="string">rule_id</item>
+                    <item name="indexField" xsi:type="string">staff_id</item>
                 </item>
             </argument>
+            <action name="delete">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">delete</item>
+                        <item name="label" xsi:type="string" translate="true">Delete</item>
+                        <item name="url" xsi:type="url" path="webpos/staff/massDelete"/>
+                        <item name="confirm" xsi:type="array">
+                            <item name="title" xsi:type="string" translate="true">Delete items</item>
+                            <item name="message" xsi:type="string" translate="true">Are you sure you want to delete selected items?</item>
+                        </item>
+                    </item>
+                </argument>
+            </action>
+            <!--<action name="change_status">-->
+                <!--<argument name="data" xsi:type="array">-->
+                    <!--<item name="config" xsi:type="array">-->
+                        <!--<item name="type" xsi:type="string">change_status</item>-->
+                        <!--<item name="label" xsi:type="string" translate="true">Change status</item>-->
+                    <!--</item>-->
+                <!--</argument>-->
+                <!--<argument name="actions" xsi:type="configurableObject">-->
+                    <!--<argument name="class" xsi:type="string">Webpos\Webpos\Ui\Component\MassAction\Status\Options</argument>-->
+                    <!--<argument name="data" xsi:type="array">-->
+                        <!--<item name="urlPath" xsi:type="string">webpos/staff/massStatus</item>-->
+                        <!--<item name="paramName" xsi:type="string">status</item>-->
+                    <!--</argument>-->
+                <!--</argument>-->
+            <!--</action>-->
+
             <action name="enable">
                 <argument name="data" xsi:type="array">
                     <item name="config" xsi:type="array">
@@ -143,44 +158,53 @@
                     </item>
                 </argument>
             </action>
-            <action name="delete">
-                <argument name="data" xsi:type="array">
-                    <item name="config" xsi:type="array">
-                        <item name="type" xsi:type="string">delete</item>
-                        <item name="label" xsi:type="string" translate="true">Delete</item>
-                        <item name="url" xsi:type="url" path="webpos/staff/massDelete"/>
-                        <item name="confirm" xsi:type="array">
-                            <item name="title" xsi:type="string" translate="true">Delete items</item>
-                            <item name="message" xsi:type="string" translate="true">Are you sure you want to delete selected items?</item>
+
+
+        </massaction>
+
+        <filters name="listing_filters">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+
+                    <item name="columnsProvider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.webpos_staff_columns</item>
+                    <item name="storageConfig" xsi:type="array">
+                        <item name="provider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.listing_top.bookmarks</item>
+                        <item name="namespace" xsi:type="string">current</item>
+                    </item>
+
+
+                    <item name="childDefaults" xsi:type="array">
+                        <item name="provider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.listing_top.listing_filters</item>
+                        <item name="imports" xsi:type="array">
+                            <item name="visible" xsi:type="string">webpos_staff_listing.webpos_staff_listing.webpos_staff_columns.${ $.index }:visible</item>
                         </item>
                     </item>
-                </argument>
-            </action>
-        </massaction>
+                </item>
+            </argument>
+        </filters>
         <paging name="listing_paging">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="storageConfig" xsi:type="array">
-                        <item name="provider" xsi:type="string">wepos_staff_listing.wepos_staff_listing.listing_top.bookmarks</item>
+                        <item name="provider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.listing_top.bookmarks</item>
                         <item name="namespace" xsi:type="string">current.paging</item>
                     </item>
-                    <item name="selectProvider" xsi:type="string">wepos_staff_listing.wepos_staff_listing.wepos_staff_listing.ids</item>
+                    <item name="selectProvider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.webpos_staff_columns.ids</item>
                 </item>
             </argument>
         </paging>
     </container>
-
-    <columns name="wepos_staff_listing">
+    <columns name="webpos_staff_columns">
         <argument name="data" xsi:type="array">
             <item name="config" xsi:type="array">
                 <item name="storageConfig" xsi:type="array">
-                    <item name="provider" xsi:type="string">wepos_staff_listing.wepos_staff_listing.listing_top.bookmarks</item>
+                    <item name="provider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.listing_top.bookmarks</item>
                     <item name="namespace" xsi:type="string">current</item>
                 </item>
                 <item name="editorConfig" xsi:type="array">
-                    <item name="selectProvider" xsi:type="string">wepos_staff_listing.wepos_staff_listing.wepos_staff_listing.ids</item>
+                    <item name="selectProvider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.webpos_staff_listing.ids</item>
                     <item name="enabled" xsi:type="boolean">true</item>
-                    <item name="indexField" xsi:type="string">rule_id</item>
+                    <item name="indexField" xsi:type="string">staff_id</item>
                     <item name="clientConfig" xsi:type="array">
                         <item name="saveUrl" xsi:type="url" path="webpos/staff/inlineEdit"/>
                         <item name="validateBeforeSave" xsi:type="boolean">false</item>
@@ -188,7 +212,7 @@
                 </item>
                 <item name="childDefaults" xsi:type="array">
                     <item name="fieldAction" xsi:type="array">
-                        <item name="provider" xsi:type="string">wepos_staff_listing.wepos_staff_listing.wepos_staff_listing_editor</item>
+                        <item name="provider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.webpos_staff_listing_editor</item>
                         <item name="target" xsi:type="string">startEdit</item>
                         <item name="params" xsi:type="array">
                             <item name="0" xsi:type="string">${ $.$data.rowIndex }</item>
@@ -196,7 +220,7 @@
                         </item>
                     </item>
                     <item name="storageConfig" xsi:type="array">
-                        <item name="provider" xsi:type="string">wepos_staff_listing.wepos_staff_listing.listing_top.bookmarks</item>
+                        <item name="provider" xsi:type="string">webpos_staff_listing.webpos_staff_listing.listing_top.bookmarks</item>
                         <item name="root" xsi:type="string">columns.${ $.index }</item>
                         <item name="namespace" xsi:type="string">current.${ $.storageConfig.root }</item>
                     </item>
@@ -209,93 +233,71 @@
                 <item name="config" xsi:type="array">
                     <item name="resizeEnabled" xsi:type="boolean">false</item>
                     <item name="resizeDefaultWidth" xsi:type="string">55</item>
-                    <item name="indexField" xsi:type="string">rule_id</item>
+                    <item name="indexField" xsi:type="string">staff_id</item>
                 </item>
             </argument>
         </selectionsColumn>
+
         <column name="staff_id">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="filter" xsi:type="string">textRange</item>
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/column</item>
-                    <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
-                    <item name="sortable" xsi:type="boolean">true</item>
                     <item name="sorting" xsi:type="string">asc</item>
-                    <item name="dataType" xsi:type="string">text</item>
-                    <item name="align" xsi:type="string">left</item>
-                    <item name="label" xsi:type="string" translate="true">Staff ID</item>
+                    <item name="label" xsi:type="string" translate="true">ID</item>
+                    <item name="sortOrder" xsi:type="number">20</item>
                 </item>
             </argument>
         </column>
-        <column name="name">
+
+        <column name="username">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="editor" xsi:type="array">
-                        <item name="editorType" xsi:type="string">text</item>
-                        <item name="validation" xsi:type="array">
-                            <item name="required-entry" xsi:type="boolean">true</item>
-                        </item>
-                    </item>
                     <item name="filter" xsi:type="string">text</item>
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/column</item>
-                    <item name="dataType" xsi:type="string">text</item>
-                    <item name="align" xsi:type="string">left</item>
-                    <item name="label" xsi:type="string" translate="true">Rule Name</item>
-                    <item name="sortOrder" xsi:type="string">2</item>
+                    <item name="sorting" xsi:type="string">asc</item>
+                    <item name="label" xsi:type="string" translate="true">Username</item>
+                    <item name="sortOrder" xsi:type="number">30</item>
                 </item>
             </argument>
         </column>
-        <!--<column name="description">-->
-            <!--<argument name="data" xsi:type="array">-->
-                <!--<item name="config" xsi:type="array">-->
-                    <!--<item name="editor" xsi:type="array">-->
-                        <!--<item name="editorType" xsi:type="string">text</item>-->
-                    <!--</item>-->
-                    <!--<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/column</item>-->
-                    <!--<item name="dataType" xsi:type="string">text</item>-->
-                    <!--<item name="align" xsi:type="string">left</item>-->
-                    <!--<item name="label" xsi:type="string" translate="true">Description</item>-->
-                <!--</item>-->
-            <!--</argument>-->
-        <!--</column>-->
-        <!--<column name="sort_order">-->
-            <!--<argument name="data" xsi:type="array">-->
-                <!--<item name="config" xsi:type="array">-->
-                    <!--<item name="editor" xsi:type="array">-->
-                        <!--<item name="editorType" xsi:type="string">text</item>-->
-                        <!--<item name="validation" xsi:type="array">-->
-                            <!--<item name="required-entry" xsi:type="boolean">true</item>-->
-                        <!--</item>-->
-                    <!--</item>-->
-                    <!--<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/column</item>-->
-                    <!--<item name="dataType" xsi:type="string">text</item>-->
-                    <!--<item name="align" xsi:type="string">left</item>-->
-                    <!--<item name="label" xsi:type="string" translate="true">Priority</item>-->
-                <!--</item>-->
-            <!--</argument>-->
-        <!--</column>-->
+
+        <column name="email">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="editor" xsi:type="string">text</item>
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="sorting" xsi:type="string">asc</item>
+                    <item name="label" xsi:type="string" translate="true">Email</item>
+                    <item name="sortOrder" xsi:type="number">40</item>
+                </item>
+            </argument>
+        </column>
+
+        <column name="display_name">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="editor" xsi:type="string">text</item>
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="sorting" xsi:type="string">asc</item>
+                    <item name="label" xsi:type="string" translate="true">Display Name</item>
+                    <item name="sortOrder" xsi:type="number">50</item>
+                </item>
+            </argument>
+        </column>
+
+
+
+
 
         <!--<column name="status">-->
             <!--<argument name="data" xsi:type="array">-->
-                <!--<item name="options" xsi:type="array">-->
-                    <!--<item name="disable" xsi:type="array">-->
-                        <!--<item name="value" xsi:type="string">2</item>-->
-                        <!--<item name="label" xsi:type="string" translate="true">Disabled</item>-->
-                    <!--</item>-->
-                    <!--<item name="enable" xsi:type="array">-->
-                        <!--<item name="value" xsi:type="string">1</item>-->
-                        <!--<item name="label" xsi:type="string" translate="true">Enabled</item>-->
-                    <!--</item>-->
-                <!--</item>-->
+                <!--<item name="options" xsi:type="object">Magestore\Webpos\Ui\Component\Listing\Column\Status</item>-->
                 <!--<item name="config" xsi:type="array">-->
-                    <!--<item name="editor" xsi:type="array">-->
-                        <!--<item name="editorType" xsi:type="string">select</item>-->
-                    <!--</item>-->
+                    <!--<item name="editor" xsi:type="string">select</item>-->
                     <!--<item name="filter" xsi:type="string">select</item>-->
                     <!--<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>-->
                     <!--<item name="dataType" xsi:type="string">select</item>-->
-                    <!--<item name="align" xsi:type="string">left</item>-->
                     <!--<item name="label" xsi:type="string" translate="true">Status</item>-->
+                    <!--<item name="sortOrder" xsi:type="number">90</item>-->
                 <!--</item>-->
             <!--</argument>-->
         <!--</column>-->
