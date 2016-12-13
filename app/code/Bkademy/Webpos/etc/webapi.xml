@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<!--
+  ~ * Copyright © 2016 Bkademy. All rights reserved.
+  ~ * See COPYING.txt for license details.
+  ~
+  -->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+
+    <!-- product api -->
+    <route url="/V1/webpos/products/swatch/search" method="GET">
+        <service class="Bkademy\Webpos\Api\Catalog\SwatchRepositoryInterface" method="getList"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+
+    <route url="/V1/webpos/products" method="GET">
+        <service class="Bkademy\Webpos\Api\Catalog\ProductRepositoryInterface" method="getList"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+
+    <route url="/V1/webpos/products/get/:sku" method="GET">
+        <service class="Bkademy\Webpos\Api\Catalog\ProductRepositoryInterface" method="get"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+    <!-- end product api -->
+
+    <!-- category api -->
+    <route url="/V1/webpos/categories" method="GET">
+        <service class="Bkademy\Webpos\Api\Catalog\CategoryRepositoryInterface" method="getList"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+    <!-- end category api -->
+
+</routes>
