@@ -8,9 +8,10 @@ define(
     [
         'jquery',
         'ko',
-        'uiClass'
+        'uiClass',
+        'Magento_Catalog/js/price-utils'
     ],
-    function ($,ko, UiClass) {
+    function ($,ko, UiClass, PriceUtils) {
         "use strict";
         return UiClass.extend({
             initialize: function () {
@@ -29,7 +30,7 @@ define(
 
                 self.valueFormated = ko.pureComputed(function(){
                     var value = self.value();
-                    return value;
+                    return PriceUtils.formatPrice(value, window.webposConfig.priceFormat);
                 });
             },
             setData: function(key,value){

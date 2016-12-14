@@ -470,7 +470,7 @@ body #checkout_container .main-content:hover ::-webkit-scrollbar{visibility: vis
 .wrap-item-order .not-found h2{font-size: 16px;margin: 0;color: red;}
 .grand-total-footer button.button {text-transform:uppercase;border: 0 none;color: #fff;padding:0;    }
 .grand-total-footer button.button.hold {background: #6f7d90;width: 100px;flex-grow: 1;margin-right: 20px;}
-.grand-total-footer button.button.checkout {background: #00a679;width: 60%;}
+.grand-total-footer button.button.checkout {background: #00a679;width: 100%;}
 .order-comment-list table td{border-bottom:1px solid #e9ecf2;border-top:0 none!important}
 .order-pages .modal .modal-dialog .wrap-table{max-height:calc(100vh - 380px);overflow: auto;margin-bottom:20px}
 .main-content-no-order {text-align:center}
