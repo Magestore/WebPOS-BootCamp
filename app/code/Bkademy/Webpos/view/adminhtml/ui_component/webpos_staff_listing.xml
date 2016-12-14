@@ -9,7 +9,7 @@
         <item name="buttons" xsi:type="array">
             <item name="add" xsi:type="array">
                 <item name="name" xsi:type="string">add</item>
-                <item name="label" xsi:type="string" translate="true">Add Staff</item>
+                <item name="label" xsi:type="string" translate="true">Add New Staff</item>
                 <item name="class" xsi:type="string">primary</item>
                 <item name="url" xsi:type="string">*/*/new</item>
             </item>
@@ -284,23 +284,19 @@
             </argument>
         </column>
 
-
-
-
-
-        <!--<column name="status">-->
-            <!--<argument name="data" xsi:type="array">-->
-                <!--<item name="options" xsi:type="object">Magestore\Webpos\Ui\Component\Listing\Column\Status</item>-->
-                <!--<item name="config" xsi:type="array">-->
-                    <!--<item name="editor" xsi:type="string">select</item>-->
-                    <!--<item name="filter" xsi:type="string">select</item>-->
-                    <!--<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>-->
-                    <!--<item name="dataType" xsi:type="string">select</item>-->
-                    <!--<item name="label" xsi:type="string" translate="true">Status</item>-->
-                    <!--<item name="sortOrder" xsi:type="number">90</item>-->
-                <!--</item>-->
-            <!--</argument>-->
-        <!--</column>-->
+        <column name="status">
+            <argument name="data" xsi:type="array">
+                <item name="options" xsi:type="object">Bkademy\Webpos\Ui\Component\Listing\Column\Status</item>
+                <item name="config" xsi:type="array">
+                    <item name="editor" xsi:type="string">select</item>
+                    <item name="filter" xsi:type="string">select</item>
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
+                    <item name="dataType" xsi:type="string">select</item>
+                    <item name="label" xsi:type="string" translate="true">Status</item>
+                    <item name="sortOrder" xsi:type="number">60</item>
+                </item>
+            </argument>
+        </column>
 
         <actionsColumn name="actions" class="Bkademy\Webpos\Ui\Component\Listing\Column\StaffActions">
             <argument name="data" xsi:type="array">
