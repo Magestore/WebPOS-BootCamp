@@ -19,28 +19,20 @@
  * @copyright   Copyright (c) 2012 Magestore (http://www.magestore.com/)
  * @license     http://www.magestore.com/license-agreement.html
  */
+namespace Bkademy\Webpos\Controller\Adminhtml\Staff;
 
-namespace Magestore\Promotionalgift\Block\Adminhtml\Shoppingcartrule\Edit;
-
+use Magento\Framework\Controller\ResultFactory;
 /**
- * class Tabs.
- *
- * @category Magestore
- * @package  Magestore_Promotionalgift
- * @module   Promotionalgift
- * @author   Magestore Developer
+ * Action NewAction
  */
-class Tabs extends \Magento\Backend\Block\Widget\Tabs
+class NewAction extends \Bkademy\Webpos\Controller\Adminhtml\Staff
 {
     /**
-     * construct.
+     * @return \Magento\Framework\View\Result\Page
      */
-    protected function _construct()
+    public function execute()
     {
-        parent::_construct();
-        $this->setId('shoppingcartrule_edit_tabs');
-        $this->setDestElementId('edit_form');
-        $this->setTitle(__('Shopping Cart Rule Information'));
-        parent::_prepareLayout();
+        $resultForward = $this->resultFactory->create(ResultFactory::TYPE_FORWARD);
+        return $resultForward->forward('edit');
     }
 }
