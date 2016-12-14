@@ -21,7 +21,10 @@
 	        </argument>
 	    </arguments>
     </type>
-    
+    <!-- rewrite api controller -->
+    <preference for="Magento\Webapi\Controller\Rest\RequestValidator" type="Bkademy\Webpos\Controller\Rest\RequestValidator"/>
+    <preference for="Magento\Webapi\Controller\Rest" type="Bkademy\Webpos\Controller\Rest"/>
+    <!-- end rewrite api controller -->
     <!-- product api -->
     <preference for="Bkademy\Webpos\Api\Catalog\ProductRepositoryInterface"
                 type="Bkademy\Webpos\Model\Repository\Catalog\ProductRepository"/>
@@ -36,5 +39,13 @@
     <preference for="Bkademy\Webpos\Api\Catalog\CategoryRepositoryInterface"
                 type="Bkademy\Webpos\Model\Repository\Catalog\CategoryRepository"/>
     <!-- end category api -->
+
+    <type name="Bkademy\Webpos\Model\WebposConfigProvider\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="webpos_default_config_provider" xsi:type="object">Bkademy\Webpos\Model\WebposConfigProvider\DefaultConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
 
 </config>
