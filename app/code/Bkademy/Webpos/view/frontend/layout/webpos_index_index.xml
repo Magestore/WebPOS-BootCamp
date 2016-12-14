@@ -29,7 +29,8 @@
         <referenceContainer name="main">
             <container name="content" label="Main Content Area">
                 <block class="Magento\Framework\View\Element\FormKey" name="formkey"/>
-                <block class="Bkademy\Webpos\Block\AbstractBlock" name="webpos.page" template="Bkademy_Webpos::page.phtml">
+                <block class="Bkademy\Webpos\Block\Login" name="webpos_login" template="Magestore_Webpos::login.phtml" />
+                <block class="Bkademy\Webpos\Block\Page" name="webpos.page" template="Bkademy_Webpos::page.phtml">
                     <arguments>
                         <argument name="jsLayout" xsi:type="array">
                             <item name="components" xsi:type="array">

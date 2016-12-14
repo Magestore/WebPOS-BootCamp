@@ -1,15 +1,28 @@
 <div id="webpos_cart" class="col-sm-4 col-right">
     <header class="o-header">
         <nav class="o-header-nav">
-            <button id="back_to_cart" class="c-button"><span class="icon-iconPOS-previous"></span></button>
-            <button id="empty_cart" class="c-button"><span class="icon-iconPOS-emptycart"></span></button>
-            <label class="title title-cart title-header-page">Cart(0)</label>
-            <div class="more-info">
-                <span class="icon-iconPOS-more"></span>
+            <!-- ko if:isOnCheckoutPage() && !createdOrder() -->
+            <button id="back_to_cart" class="c-button" data-bind="click:switchToCart"><span class="icon-iconPOS-previous"></span></button>
+            <!-- /ko -->
+            <!-- ko ifnot:isOnCheckoutPage() -->
+            <button id="empty_cart" class="c-button" data-bind="click:emptyCart"><span class="icon-iconPOS-emptycart"></span></button>
+            <!-- /ko -->
+            <label class="title title-cart title-header-page" data-bind="text:cartTitle"></label>
+            <div class="more-info" >
+                <a href="#"><span class="icon-iconPOS-more"></span></a>
             </div>
         </nav>
+        <div class="actions-customer">
+        </div>
     </header>
 
     <div class="main-item-order">
+        <!-- ko foreach: {data:getRegion('webpos.cart.items')} -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!-- /ko -->
+        <!-- ko foreach: {data:getRegion('webpos.cart.totals')} -->
+        <!-- ko template: getTemplate() --><!-- /ko -->
+        <!-- /ko -->
+
     </div>
 </div>
