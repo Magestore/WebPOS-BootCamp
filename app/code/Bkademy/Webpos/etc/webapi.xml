@@ -40,4 +40,11 @@
     </route>
     <!-- end category api -->
 
+    <route url="/V1/webpos/customers" method="GET">
+        <service class="Magento\Customer\Api\CustomerRepositoryInterface" method="getList"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+
 </routes>

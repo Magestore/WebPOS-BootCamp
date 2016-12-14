@@ -84,9 +84,9 @@
                                                     <item name="data" xsi:type="array">
                                                         <item name="id" xsi:type="string">customer</item>
                                                         <item name="title" xsi:type="string">Customers</item>
-                                                        <item name="container" xsi:type="string">customer</item>
+                                                        <item name="container" xsi:type="string">customer_list</item>
                                                         <item name="is_display" xsi:type="string">1</item>
-                                                        <item name="icon_class" xsi:type="string">icon-iconPOS-customers</item>
+                                                        <item name="icon_class" xsi:type="string">icon-iconPOS-customer-list</item>
                                                     </item>
                                                 </item>
                                             </item>

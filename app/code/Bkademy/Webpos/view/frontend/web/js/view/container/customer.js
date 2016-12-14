@@ -5,7 +5,7 @@ define([
 
     return Container.extend({
         defaults: {
-            container_id:"customer"
+            container_id:"customer_list"
         }
     });
 });
