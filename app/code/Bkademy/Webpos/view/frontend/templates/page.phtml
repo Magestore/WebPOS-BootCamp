@@ -21,4 +21,8 @@
         ], function (url) {
             return url.setBaseUrl('<?php /* @escapeNotVerified */ echo $block->getBaseUrl();?>');
         });
+
+    <?php $config = $block->getWebposConfig(); ?>
+    window.webposConfig = <?php /* @escapeNotVerified */ echo \Zend_Json::encode($config); ?>;
 </script>
+
