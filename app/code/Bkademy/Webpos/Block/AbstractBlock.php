@@ -11,6 +11,11 @@ class AbstractBlock extends \Magento\Framework\View\Element\Template
     protected $_layoutProcessors;
 
     /**
+     * @var \Magento\Checkout\Model\CompositeConfigProvider
+     */
+    protected $configProvider;
+
+    /**
      * AbstractBlock constructor.
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param array $layoutProcessors
@@ -18,10 +23,12 @@ class AbstractBlock extends \Magento\Framework\View\Element\Template
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
+        \Bkademy\Webpos\Model\WebposConfigProvider\CompositeConfigProvider $configProvider,
         array $layoutProcessors = [],
         array $data = []
     ) {
         $this->_layoutProcessors = $layoutProcessors;
+        $this->configProvider = $configProvider;
         parent::__construct($context, $data);
     }
 
@@ -35,4 +42,16 @@ class AbstractBlock extends \Magento\Framework\View\Element\Template
         }
         return parent::getJsLayout();
     }
+
+    /**
+     * Retrieve checkout configuration
+     *
+     * @return array
+     * @codeCoverageIgnore
+     */
+    public function getWebposConfig()
+    {
+        return $this->configProvider->getConfig();
+    }
+
 }

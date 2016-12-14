@@ -40,4 +40,12 @@
                 type="Bkademy\Webpos\Model\Repository\Catalog\CategoryRepository"/>
     <!-- end category api -->
 
+    <type name="Bkademy\Webpos\Model\WebposConfigProvider\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="webpos_default_config_provider" xsi:type="object">Bkademy\Webpos\Model\WebposConfigProvider\DefaultConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
 </config>

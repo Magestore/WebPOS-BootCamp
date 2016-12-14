@@ -8,8 +8,9 @@ define([
     'mage/storage',
     'ko',
     'Bkademy_Webpos/js/model/url-builder',
-    'Bkademy_Webpos/js/model/checkout/cart'
-], function ($, Component, storage, ko, urlBuilder, CartModel) {
+    'Bkademy_Webpos/js/model/checkout/cart',
+    'Magento_Catalog/js/price-utils'
+], function ($, Component, storage, ko, urlBuilder, CartModel, priceUtils) {
     'use strict';
 
     return Component.extend({
@@ -34,29 +35,34 @@ define([
         showProduct: function (pageNumber) {
             var self = this;
             var params = {};
-            var serviceUrl = urlBuilder.createUrl('/products?searchCriteria[pageSize]=20&searchCriteria[currentPage]='+pageNumber, params);
+            var serviceUrl = urlBuilder.createUrl('/webpos/products?searchCriteria[pageSize]=16&searchCriteria[currentPage]='+pageNumber, params);
             var payload = {};
             storage.get(
                 serviceUrl, JSON.stringify(payload)
             ).done(function (response) {
                 self.product(response.items);
                 self.numberOfPage(response.total_count);
+                self.curPage(pageNumber);
                 //self.hideLoader();
             }).fail(function (response) {
 
             });
         },
 
+        formatPrice: function (price) {
+            return priceUtils.formatPrice(price, window.webposConfig.priceFormat);
+        },
+        
         filter: function () {
-
+            
         },
-
+        
         previous: function () {
-
+            
         },
-
+        
         next: function () {
-
+            
         },
 
         addToCart: function (data) {
