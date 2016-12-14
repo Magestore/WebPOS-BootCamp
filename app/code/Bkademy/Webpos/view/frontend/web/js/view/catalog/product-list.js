@@ -7,8 +7,9 @@ define([
     'uiComponent',
     'mage/storage',
     'ko',
-    'Bkademy_Webpos/js/model/url-builder'
-], function ($, Component, storage, ko, urlBuilder) {
+    'Bkademy_Webpos/js/model/url-builder',
+    'Bkademy_Webpos/js/model/checkout/cart'
+], function ($, Component, storage, ko, urlBuilder, CartModel) {
     'use strict';
 
     return Component.extend({
@@ -45,21 +46,29 @@ define([
 
             });
         },
-        
+
         filter: function () {
-            
+
         },
-        
+
         previous: function () {
-            
+
         },
-        
+
         next: function () {
-            
+
         },
 
         addToCart: function (data) {
-            
+            var infoBuy = {
+                'product_id': data.id,
+                'name': data.name,
+                'qty': 1,
+                'unit_price': data.price,
+                'image_url': data.image,
+                'is_virtual': false
+            };
+            CartModel.addProduct(infoBuy);
         }
     });
 });
