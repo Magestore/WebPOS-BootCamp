@@ -81,8 +81,8 @@ class StaffActions extends Column
                             ),
                             'label' => __('Delete'),
                             'confirm' => [
-                                'title' => __('Delete "${ $.$data.name }"'),
-                                'message' => __('Are you sure you want to delete a "${ $.$data.name }" record?')
+                                'title' => __('Delete "${ $.$data.username }"'),
+                                'message' => __('Are you sure you want to delete a "${ $.$data.username }" record?')
                             ]
                         ]
                     ];
