@@ -3,10 +3,12 @@
  * See COPYING.txt for license details.
  */
 define([
+    'jquery',
     'uiComponent',
     'mage/storage',
+    'ko',
     'Bkademy_Webpos/js/model/url-builder'
-], function (Component, storage, urlBuilder) {
+], function ($, Component, storage, ko, urlBuilder) {
     'use strict';
 
     return Component.extend({
@@ -15,6 +17,12 @@ define([
         defaults: {
             template: 'Bkademy_Webpos/catalog/product-list'
         },
+
+        product: ko.observableArray([]),
+        curPage: ko.observable(1),
+        numberOfPage: ko.observable(0),
+        searchKey: ko.observable(''),
+        quote: ko.observableArray([]),
 
         initialize: function () {
             var self = this;
@@ -30,10 +38,28 @@ define([
             storage.get(
                 serviceUrl, JSON.stringify(payload)
             ).done(function (response) {
-
+                self.product(response.items);
+                self.numberOfPage(response.total_count);
+                //self.hideLoader();
             }).fail(function (response) {
 
             });
+        },
+        
+        filter: function () {
+            
+        },
+        
+        previous: function () {
+            
+        },
+        
+        next: function () {
+            
+        },
+
+        addToCart: function (data) {
+            
         }
     });
 });
