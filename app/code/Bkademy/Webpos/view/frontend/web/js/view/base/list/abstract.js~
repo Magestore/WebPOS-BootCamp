@@ -1,0 +1,51 @@
+define(
+        [
+            'jquery',
+            'ko',
+            'Magestore_Webpos/js/view/base/abstract',
+        ],
+        function ($, ko, viewAbstract) {
+            "use strict";
+
+            return viewAbstract.extend({
+                items: ko.observableArray([]),
+                columns: ko.observableArray([]),
+                defaults: {
+                    template: 'Magestore_Webpos/base/list/abstract',
+                },
+                initialize: function () {
+                    this._super();
+                    this.isShowHeader = false;
+                    this.pageSize = 10;
+                    this._prepareItems();
+                    this._prepareColumns();
+					this._matching();
+                },
+                _prepareItems: function () {
+
+                },
+                _prepareColumns: function () {
+
+                },
+				_matching: function() {
+                    for (var i in this.items) {
+                        this.items[i].columns = this.columns;
+                    }
+				},
+                addItem: function (item) {
+                    this.items.push(item);
+                },
+                addItems: function (items) {
+                    for (var i in this.items) {
+                        this.items.push($items[i]);
+                    }
+                },
+                setItems: function (items) {
+                    this.items = items;
+                },
+                addColumn: function (column) {
+                    this.columns.push(column);
+                },
+            });
+        }
+);
