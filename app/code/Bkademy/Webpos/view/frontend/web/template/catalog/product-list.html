@@ -1,31 +1,94 @@
-<div class="col-sm-8 col-left"  id="product-list-wrapper">
+<div class="col-sm-8 col-left" id="product-list-wrapper">
     <header class="o-header">
         <nav class="o-header-nav">
-            <div class="form-inline">
+            <div class="form-inline" role="form">
                 <div class="form-group">
                     <span class="icon-iconPOS-search"></span>
-                    <input type="search" class="form-control search-header" id="search-header-product"/>
-                    <a id="remove-text-search-product">
+                    <input type="search"
+                           class="form-control search-header" id="search-header-product"
+                           placeholder="Enter terms or scan barcodes to search" data-bind="value: searchKey, event: {change: filter}">
+                    <a id="remove-text-search-product" class="remove-text">
                         <span class="icon-iconPOS-delete"></span>
                     </a>
                 </div>
-            </div>
-            <div class="catalog-header">
-                <span class="icon-iconPOS-categories"></span>
-                <span class="title title-header-page" data-bind="i18n: 'All Categories'"></span>
-                <span class="icon-iconPOS-dropdown"></span>
+                <button type="submit" class="btn btn-default">Search
+                </button>
             </div>
         </nav>
-    </header>
+        <div id="all-categories" class="collapse">
+            <div id="list-cat-header" class="owl-carousel"></div>
+        </div>
+    </header><!-- /o-header -->
     <main class="main-content">
         <div id="block-product-list">
             <div class="grid-data">
                 <div class="wrap-list-product scroll-grid" style="">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <!-- ko foreach: product -->
+                            <div class="col-sm-3" data-bind="click: $parent.addToCart.bind($data)">
+
+                                <div class="item product-item">
+                                    <div class="product-img">
+                                        <a class="warning"
+                                           title="Out of stock" style="display: none;"><span
+                                                class="icon-iconPOS-out-of-stock"></span></a>
+                                        <img width="119" height="auto"
+                                             data-bind="attr: {src: image_url}">
+                                    </div>
+                                    <div class="product-info">
+                                        <h3 class="product-name" data-bind="text:name"></h3>
+                                        <div>
+                                            <span class="final-price price"  data-bind="text: price"></span>
+                                        </div>
+                                        <span>Available qty: </span>
+                                        <label data-bind="text: qty"></label>
+                                    </div>
+                                    <a data-target="#popup-product-details" data-toggle="modal"
+                                       class="info" href="#"
+                                       title="View product details">
+                                                            <span class="icon-iconPOS-detail">
+                                                                <span class="path1"></span>
+                                                                <span class="path2"></span>
+                                                            </span>
+                                    </a>
+                                </div>
+
+                            </div>
+                            <!--/ko-->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </main>
+    </main><!-- /o-content -->
+    <div class="col-sm-8 col-left wrap-list-product" id="product-list-overlay"
+         style="opacity: 1; background-color: rgb(255, 255, 255); position: fixed; z-index: 99999; display: none;">
+        <span class="product-loader"></span>
+    </div>
     <footer class="list-product-footer">
+        <div class="wrap-footer">
+            <div class="product-total-loading">
+                <label class="number-product" data-bind="text: numberOfPage" ></label><label>products</label>
+                <span style="display: none;"></span>
+            </div>
+            <div id="productPager">
+                <ul class="pagination-pos" style="margin-top: 0px">
+                    <li style="float: left">
+                                            <span data-bind="click: previous" class="icon-iconPOS-previous" aria-hidden="true">
 
+                                            </span></li>
+                    <li class="pager-list"><span class="pager" data-bind="text: curPage"></span></li>
+                    <li style="float: left">
+                        <span class="icon-iconPOS-next" data-bind="click: next" aria-hidden="true"></span>
+                    </li>
+                </ul>
+            </div>
+            <label class="custom-sale pos_modal_link" data-toggle="modal"
+                   data-target="#popup-custom-sale">
+                <span class="icon-iconPOS-customer-sale"></span>
+                <span class="pos_modal_link">Custom sale</span>
+            </label>
+        </div>
     </footer>
 </div>
