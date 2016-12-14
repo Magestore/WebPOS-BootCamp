@@ -48,6 +48,23 @@ define([
             });
         },
 
+        searchProduct: function (key, curPage) {
+            var self = this;
+            var params = {};
+            var serviceUrl = urlBuilder.createUrl('/webpos/products?searchCriteria[pageSize]=16&searchCriteria[currentPage]='+pageNumber, params);
+            var payload = {};
+            storage.get(
+                serviceUrl, JSON.stringify(payload)
+            ).done(function (response) {
+                self.product(response.items);
+                self.numberOfPage(response.total_count);
+                self.curPage(pageNumber);
+                //self.hideLoader();
+            }).fail(function (response) {
+
+            });
+        },
+
         formatPrice: function (price) {
             return priceUtils.formatPrice(price, window.webposConfig.priceFormat);
         },
@@ -55,16 +72,17 @@ define([
         filter: function () {
             
         },
-        
-        previous: function () {
-            
-        },
-        
+
         next: function () {
-            
+            var curPage = this.curPage();
+            this.searchProduct(this.searchKey(), curPage + 1);
         },
 
-        addToCart: function (data) {
+        previous: function () {
+            var curPage = this.curPage();
+            this.searchProduct(this.searchKey(), curPage - 1);
+        },
+        addToCart :function (data) {
             
         }
     });
