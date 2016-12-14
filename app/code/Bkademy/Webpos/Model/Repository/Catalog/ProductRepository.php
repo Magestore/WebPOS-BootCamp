@@ -30,18 +30,18 @@ class ProductRepository extends \Magento\Catalog\Model\ProductRepository
     {
         if (empty($this->_productCollection)) {
             $collection = \Magento\Framework\App\ObjectManager::getInstance()->get(
-                '\Bkademy\Webpos\Model\Repository\ResourceModel\Catalog\Product\Collection'
+                '\Bkademy\Webpos\Model\ResourceModel\Catalog\Product\Collection'
             );
 
             /** Integrate webpos **/
             $eventManage = \Magento\Framework\App\ObjectManager::getInstance()->get(
                 '\Magento\Framework\Event\ManagerInterface'
             );
-            $permissionHelper = \Magento\Framework\App\ObjectManager::getInstance()->get(
-                '\Bkademy\Webpos\Helper\Permission'
-            );
-            $eventManage->dispatch('webpos_catalog_product_getlist', ['collection' => $collection, 'location' => $permissionHelper->getCurrentLocation()]);
-            /** End integrate webpos **/
+//            $permissionHelper = \Magento\Framework\App\ObjectManager::getInstance()->get(
+//                '\Bkademy\Webpos\Helper\Permission'
+//            );
+//            $eventManage->dispatch('webpos_catalog_product_getlist', ['collection' => $collection, 'location' => $permissionHelper->getCurrentLocation()]);
+//            /** End integrate webpos **/
 
             $this->extensionAttributesJoinProcessor->process($collection);
             $collection->addAttributeToSelect('*');
