@@ -16,7 +16,7 @@ class Page extends \Bkademy\Webpos\Block\AbstractBlock
         $isLogin = \Magento\Framework\App\ObjectManager::getInstance()->create('Bkademy\Webpos\Helper\Data')
             ->isLogin();
         if($isLogin)
-            parent::toHtml();
+            return parent::toHtml();
         return '';
     }
 }
