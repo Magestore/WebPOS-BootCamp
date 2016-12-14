@@ -13,3 +13,12 @@
         }
     }
 </script>
+
+<script>
+    require(
+        [
+            'mage/url'
+        ], function (url) {
+            return url.setBaseUrl('<?php /* @escapeNotVerified */ echo $block->getBaseUrl();?>');
+        });
+</script>

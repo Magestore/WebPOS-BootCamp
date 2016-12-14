@@ -21,7 +21,10 @@
 	        </argument>
 	    </arguments>
     </type>
-    
+    <!-- rewrite api controller -->
+    <preference for="Magento\Webapi\Controller\Rest\RequestValidator" type="Bkademy\Webpos\Controller\Rest\RequestValidator"/>
+    <preference for="Magento\Webapi\Controller\Rest" type="Bkademy\Webpos\Controller\Rest"/>
+    <!-- end rewrite api controller -->
     <!-- product api -->
     <preference for="Bkademy\Webpos\Api\Catalog\ProductRepositoryInterface"
                 type="Bkademy\Webpos\Model\Repository\Catalog\ProductRepository"/>
