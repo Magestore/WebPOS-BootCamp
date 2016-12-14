@@ -1,0 +1,83 @@
+/*
+ *  Copyright © 2016 Magestore. All rights reserved.
+ *  See COPYING.txt for license details.
+ *
+ */
+
+define(
+    [
+        'jquery',
+        'ko',
+        'uiClass'
+    ],
+    function ($, ko, UiClass) {
+        "use strict";
+        return UiClass.extend({
+            initialize: function () {
+                this._super();
+                this.initFields = [
+                    'product_id',
+                    'name',
+                    'item_id',
+                    'qty',
+                    'unit_price',
+                    'custom_price',
+                    'image_url',
+                    'is_virtual',
+                    'saved_item'
+                ];
+            },
+            init: function(data){
+                var self = this;
+                $.each(self.initFields, function(index, fieldKey){
+                    self[fieldKey] = ko.observable((typeof data[fieldKey] != "undefined")?data[fieldKey]:'');
+                })
+
+                self.row_total = ko.pureComputed(function () {
+                    var rowTotal = self.qty() * self.unit_price();
+                    return rowTotal;
+                });
+
+                self.row_total_formated = ko.pureComputed(function () {
+                    var rowTotal = self.row_total();
+                    return rowTotal;
+                });
+            },
+            setData: function(key, value){
+                var self = this;
+                if($.type(key) == 'string') {
+                    self[key](value);
+                }else{
+                    $.each(key, function(index, val){
+                        self[key](value);
+                    });
+                }
+            },
+            getData: function(key){
+                var self = this;
+                var data = {};
+                if(typeof key != "undefined"){
+                    data = self[key]();
+                }else{
+                    var data = {};
+                    $.each(self.initFields, function(){
+                        data[this] = self[this]();
+                    });
+                }
+                return data;
+            },
+            getInfoBuyRequest: function(){
+                var self = this;
+                var infobuy = {};
+                infobuy.item_id = self.item_id();
+                infobuy.id = self.product_id();
+                infobuy.qty = self.qty();
+                infobuy.use_discount = 1;
+                if(self.custom_price() >= 0){
+                    infobuy.custom_price = self.item_price();
+                }
+                return infobuy;
+            }
+        });
+    }
+);
