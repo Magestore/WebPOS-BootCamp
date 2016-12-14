@@ -14,6 +14,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
     
     public function isLogin(){
-        return false;
+        return true;
     }
 }
