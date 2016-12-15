@@ -11,8 +11,15 @@
                         <span class="icon-iconPOS-delete"></span>
                     </a>
                 </div>
+
+
                 <button type="submit" class="btn btn-default">Search
                 </button>
+            </div>
+            <div class="catalog-header" data-toggle="collapse" data-target="#all-categories" data-bind="click: getAllCategories">
+                <span class="icon-iconPOS-categories"></span>
+                <span class="title title-header-page" data-bind="i18n: 'All Categories'"></span>
+                <span class="icon-iconPOS-dropdown"></span>
             </div>
         </nav>
         <div id="all-categories" class="collapse">
@@ -42,15 +49,10 @@
                                             <span class="final-price price"  data-bind="text: $parent.formatPrice(price)"></span>
                                         </div>
                                         <span>Available qty: </span>
-                                        <!--<label data-bind="text: qty"></label>-->
+                                        <label data-bind="text: stock"></label>
                                     </div>
-                                    <a data-target="#popup-product-details" data-toggle="modal"
-                                       class="info" href="#"
-                                       title="View product details">
-                                                            <span class="icon-iconPOS-detail">
-                                                                <span class="path1"></span>
-                                                                <span class="path2"></span>
-                                                            </span>
+                                    <a data-target="#popup-product-details" data-toggle="modal" class="info" href="#" data-bind="click: $parent.showPopupDetails.bind($parent), attr: {'title': $t('View product details')}">
+                                        <span class="icon-iconPOS-detail"><span class="path1"></span><span class="path2"></span></span>
                                     </a>
                                 </div>
 
@@ -62,8 +64,7 @@
             </div>
         </div>
     </main><!-- /o-content -->
-    <div class="col-sm-8 col-left wrap-list-product" id="product-list-overlay"
-         style="opacity: 1; background-color: rgb(255, 255, 255); position: fixed; z-index: 99999; display: none;">
+    <div class="col-sm-8 col-left wrap-list-product" id='product-list-overlay' style="opacity: 1; background-color: #fff; position: fixed; z-index: 99999">
         <span class="product-loader"></span>
     </div>
     <footer class="list-product-footer">
@@ -92,3 +93,13 @@
         </div>
     </footer>
 </div>
+
+<!-- Popup Product detail -->
+<div id="webpos_catalog_product_detail_popup" class="modal fade customer-popup-form" role="dialog" data-bind="scope:'webpos_catalog_product_detail_popup'">
+    <!-- ko template: getTemplate() --><!-- /ko -->
+</div>
+
+
+<style type="text/css">
+    .scroll-grid {height: 400px; overflow-x: auto;}
+</style>
