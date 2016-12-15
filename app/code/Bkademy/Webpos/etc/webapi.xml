@@ -46,6 +46,12 @@
             <resource ref="Bkademy_Webpos::webpos" />
         </resources>
     </route>
+    <route url="/V1/webpos/customers/:id" method="PUT">
+        <service class="Magento\Customer\Api\CustomerRepositoryInterface" method="save"/>
+        <resources>
+            <resource ref="Magestore_Webpos::webpos" />
+        </resources>
+    </route>
 
     <!-- Staff api -->
     <route url="/V1/webpos/staff/login" method="POST">

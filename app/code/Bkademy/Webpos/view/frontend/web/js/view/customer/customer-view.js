@@ -58,7 +58,14 @@ define([
 
                 var params = {};
                 var serviceUrl = urlBuilder.createUrl('/webpos/customers/'+ customerData.id, params);
-                var payload = customerData;
+                var payload = {
+                    customer: {
+                        firstname: customerData.firstname,
+                        lastname: customerData.lastname,
+                        email: customerData.email,
+                        group_id: customerData.group_id
+                    }
+                };
                 storage.put(
                     serviceUrl, JSON.stringify(payload)
                 ).done(function (response) {
