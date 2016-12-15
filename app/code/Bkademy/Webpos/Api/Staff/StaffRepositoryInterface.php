@@ -16,11 +16,11 @@ interface StaffRepositoryInterface
      * @return int|boolean
      */
     public function login($username, $password);
+    
     /**
-     * 
+     *
      * @return boolean
      */
     public function logout();
-
-
+    
 }
