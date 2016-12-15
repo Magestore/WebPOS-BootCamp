@@ -37,6 +37,10 @@ class ProductRepository extends \Magento\Catalog\Model\ProductRepository
             $eventManage = \Magento\Framework\App\ObjectManager::getInstance()->get(
                 '\Magento\Framework\Event\ManagerInterface'
             );
+
+            $request = \Magento\Framework\App\ObjectManager::getInstance()->get(
+                '\Magento\Framework\App\RequestInterface'
+            );
 //            $permissionHelper = \Magento\Framework\App\ObjectManager::getInstance()->get(
 //                '\Bkademy\Webpos\Helper\Permission'
 //            );
@@ -54,7 +58,12 @@ class ProductRepository extends \Magento\Catalog\Model\ProductRepository
             //$collection->addAttributeToFilter('visibility', ['in' => $visibleInSite]);
             //Add filters from root filter group to the collection
             foreach ($searchCriteria->getFilterGroups() as $group) {
-                $this->addFilterGroupToCollection($group, $collection);
+                if (!$request->getParam('filterOr')) {
+                    $this->addFilterGroupToCollection($group, $collection);
+                } else {
+                    $this->addFilterOrGroupToCollection($group, $collection);
+                }
+
             }
             $collection->addAttributeToFilter('type_id', ['in' => $this->getProductTypeIds()]);
             $collection->addVisibleFilter();
@@ -70,6 +79,40 @@ class ProductRepository extends \Magento\Catalog\Model\ProductRepository
         return $searchResult;
 
     }
+
+
+    /**
+     * Helper function that adds a FilterGroup to the collection.
+     *
+     * @param \Magento\Framework\Api\Search\FilterGroup $filterGroup
+     * @param Collection $collection
+     * @return void
+     */
+    protected function addFilterOrGroupToCollection(
+        \Magento\Framework\Api\Search\FilterGroup $filterGroup,
+        \Magento\Catalog\Model\ResourceModel\Product\Collection $collection
+    ) {
+        $fields = [];
+        $categoryFilter = [];
+        foreach ($filterGroup->getFilters() as $filter) {
+            $conditionType = $filter->getConditionType() ? $filter->getConditionType() : 'eq';
+
+            if ($filter->getField() == 'category_id') {
+                $categoryFilter[$conditionType][] = $filter->getValue();
+                continue;
+            }
+            $fields[] = ['attribute' => $filter->getField(), $conditionType => $filter->getValue()];
+        }
+
+        if ($categoryFilter) {
+            $collection->addCategoriesFilter($categoryFilter);
+        }
+
+        if ($fields) {
+            $collection->addFieldToFilter($fields);
+        }
+    }
+
 
     /**
      * get product attributes to select

@@ -25,5 +25,11 @@
 
     <?php $config = $block->getWebposConfig(); ?>
     window.webposConfig = <?php /* @escapeNotVerified */ echo \Zend_Json::encode($config); ?>;
+    require([
+        'Bkademy_Webpos/js/model/observer'
+    ], function (observer) {
+        observer.processEvent();
+    });
 </script>
+
 

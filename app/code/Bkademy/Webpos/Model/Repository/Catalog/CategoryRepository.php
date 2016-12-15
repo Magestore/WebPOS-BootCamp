@@ -25,7 +25,7 @@ class CategoryRepository extends \Magento\Catalog\Model\CategoryRepository
     public function getList(\Magento\Framework\Api\SearchCriteriaInterface $searchCriteria)
     {
         $collection = \Magento\Framework\App\ObjectManager::getInstance()->create(
-            '\Bkademy\Webpos\Model\Repository\ResourceModel\Catalog\Category\Collection'
+            '\Bkademy\Webpos\Model\ResourceModel\Catalog\Category\Collection'
         );
         $collection->addAttributeToSelect('name');
         $collection->addAttributeToSelect('image');

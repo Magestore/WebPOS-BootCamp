@@ -10,8 +10,9 @@ define([
     'Bkademy_Webpos/js/model/url-builder',
     'Bkademy_Webpos/js/model/checkout/cart',
     'Magento_Catalog/js/price-utils',
-    'Bkademy_Webpos/js/model/catalog/product/detail-popup'
-], function ($, Component, storage, ko, urlBuilder, CartModel, priceUtils, detailPopup) {
+    'Bkademy_Webpos/js/model/catalog/product/detail-popup',
+    'Bkademy_Webpos/js/model/event-manager'
+], function ($, Component, storage, ko, urlBuilder, CartModel, priceUtils, detailPopup, eventManager) {
     'use strict';
 
     return Component.extend({
@@ -58,13 +59,14 @@ define([
         },
 
         getAllCategories: function () {
-
+            eventManager.dispatch('load_product_by_category', {"catagory":{}});
         },
 
         searchProduct: function (key, curPage) {
             var self = this;
             var params = {};
             var serviceUrl = urlBuilder.createUrl('/webpos/products?searchCriteria[pageSize]=16' +
+                '&filterOr=1' +
                 '&searchCriteria[currentPage]='+curPage +
                 '&searchCriteria[filterGroups][0][filters][0][field]=type_id' +
                 '&searchCriteria[filterGroups][0][filters][0][value]=simple' +
@@ -90,7 +92,8 @@ define([
         },
         
         filter: function () {
-            
+            this.curPage(1);
+            this.searchProduct(this.searchKey(), this.curPage());
         },
 
         next: function () {
