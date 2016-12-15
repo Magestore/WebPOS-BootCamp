@@ -80,23 +80,23 @@ class Product extends \Magento\Catalog\Model\Product
         return $this->getData(self::DESCRIPTION);
     }
 
-    /**
-     * Get stock data by product
-     *
-     * @return array/null
-     */
+
     public function getStock()
     {
-        return;
         /** @var \Magento\CatalogInventory\Model\Stock\StockItemRepository $stockItemRepository */
         $stockItemRepository = \Magento\Framework\App\ObjectManager::getInstance()->create(
             '\Magento\CatalogInventory\Model\Stock\StockItemRepository'
         );
         try {
-            $stockData = $stockItemRepository->get($this->getId())->getData();
-            return [$stockData];
+            $stockQty = $stockItemRepository->get($this->getId())->getQty();
+            if ($stockQty) {
+                return $stockQty;
+            } else {
+                return 0;
+            }
+
         } catch (\Exception $w) {
-            return;
+            return 0;
         }
     }
 
