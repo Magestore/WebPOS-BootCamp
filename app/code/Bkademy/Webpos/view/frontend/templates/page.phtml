@@ -1,3 +1,4 @@
+
 <div class="ms-webpos">
     <div id="o-wrapper" class="o-wrapper  wrap-checkout-page" data-bind="scope:'webpos.container'">
         <!-- ko template: getTemplate() --><!-- /ko -->
@@ -26,3 +27,11 @@
     window.webposConfig = <?php /* @escapeNotVerified */ echo \Zend_Json::encode($config); ?>;
 </script>
 
+<script>
+    require([
+        'jquery',
+        'Bkademy_Webpos/js/bootstrap/bootstrap',
+        'Bkademy_Webpos/js/bootstrap/bootstrap-switch'
+    ], function($){
+    });
+</script>
