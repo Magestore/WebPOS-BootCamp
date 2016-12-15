@@ -40,6 +40,13 @@
     </route>
     <!-- end category api -->
 
+    <route url="/V1/webpos/customers" method="GET">
+        <service class="Magento\Customer\Api\CustomerRepositoryInterface" method="getList"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+
     <!-- order api-->
     <route url="/V1/webpos/orders/:id" method="GET">
         <service class="Bkademy\Webpos\Api\Sales\OrderRepositoryInterface" method="get"/>
@@ -47,6 +54,7 @@
             <resource ref="Bkademy_Webpos::webpos" />
         </resources>
     </route>
+
     <route url="/V1/webpos/orders" method="GET">
         <service class="Bkademy\Webpos\Api\Sales\OrderRepositoryInterface" method="getList"/>
         <resources>

@@ -8,8 +8,9 @@ define([
     'mage/storage',
     'ko',
     'Bkademy_Webpos/js/model/url-builder',
+    'Bkademy_Webpos/js/model/checkout/cart',
     'Magento_Catalog/js/price-utils'
-], function ($, Component, storage, ko, urlBuilder, priceUtils) {
+], function ($, Component, storage, ko, urlBuilder, CartModel, priceUtils) {
     'use strict';
 
     return Component.extend({
@@ -31,17 +32,44 @@ define([
             self.showProduct(1);
         },
 
-        showProduct: function (pageNumber) {
+        showProduct: function (curPage) {
             var self = this;
             var params = {};
-            var serviceUrl = urlBuilder.createUrl('/webpos/products?searchCriteria[pageSize]=16&searchCriteria[currentPage]='+pageNumber, params);
+            var serviceUrl = urlBuilder.createUrl('/webpos/products?searchCriteria[pageSize]=16' +
+                '&searchCriteria[currentPage]='+curPage +
+                '&searchCriteria[filterGroups][0][filters][0][field]=type_id' +
+                '&searchCriteria[filterGroups][0][filters][0][value]=simple' +
+                '&searchCriteria[filterGroups][0][filters][0][conditionType]=eq'
+                , params);
             var payload = {};
             storage.get(
                 serviceUrl, JSON.stringify(payload)
             ).done(function (response) {
                 self.product(response.items);
                 self.numberOfPage(response.total_count);
-                self.curPage(pageNumber);
+                self.curPage(curPage);
+                //self.hideLoader();
+            }).fail(function (response) {
+
+            });
+        },
+
+        searchProduct: function (key, curPage) {
+            var self = this;
+            var params = {};
+            var serviceUrl = urlBuilder.createUrl('/webpos/products?searchCriteria[pageSize]=16' +
+                '&searchCriteria[currentPage]='+curPage +
+                '&searchCriteria[filterGroups][0][filters][0][field]=type_id' +
+                '&searchCriteria[filterGroups][0][filters][0][value]=simple' +
+                '&searchCriteria[filterGroups][0][filters][0][conditionType]=eq'
+                , params);
+            var payload = {};
+            storage.get(
+                serviceUrl, JSON.stringify(payload)
+            ).done(function (response) {
+                self.product(response.items);
+                self.numberOfPage(response.total_count);
+                self.curPage(curPage);
                 //self.hideLoader();
             }).fail(function (response) {
 
@@ -55,17 +83,27 @@ define([
         filter: function () {
             
         },
-        
-        previous: function () {
-            
-        },
-        
+
         next: function () {
-            
+            var curPage = this.curPage();
+            this.searchProduct(this.searchKey(), curPage + 1);
         },
 
-        addToCart: function (data) {
+        previous: function () {
+            var curPage = this.curPage();
+            this.searchProduct(this.searchKey(), curPage - 1);
+        },
             
+        addToCart: function (data) {
+            var infoBuy = {
+                'product_id': data.id,
+                'name': data.name,
+                'qty': 1,
+                'unit_price': data.price,
+                'image_url': data.image,
+                'is_virtual': false
+            };
+            CartModel.addProduct(infoBuy);
         }
     });
 });

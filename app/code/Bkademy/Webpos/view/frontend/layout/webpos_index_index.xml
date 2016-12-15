@@ -4,6 +4,7 @@
     <update handle="webpos_product_list"/>
     <update handle="webpos_sales_order"/>
     <update handle="webpos_cart"/>
+    <update handle="webpos_customer"/>
     <head>
         <meta name="x_ua_compatible" content="IE=edge,chrome=1"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -29,7 +30,8 @@
         <referenceContainer name="main">
             <container name="content" label="Main Content Area">
                 <block class="Magento\Framework\View\Element\FormKey" name="formkey"/>
-                <block class="Bkademy\Webpos\Block\AbstractBlock" name="webpos.page" template="Bkademy_Webpos::page.phtml">
+                <block class="Bkademy\Webpos\Block\Login" name="webpos_login" template="Magestore_Webpos::login.phtml" />
+                <block class="Bkademy\Webpos\Block\Page" name="webpos.page" template="Bkademy_Webpos::page.phtml">
                     <arguments>
                         <argument name="jsLayout" xsi:type="array">
                             <item name="components" xsi:type="array">
@@ -76,6 +78,17 @@
                                                         <item name="container" xsi:type="string">orders_history</item>
                                                         <item name="is_display" xsi:type="string">1</item>
                                                         <item name="icon_class" xsi:type="string">icon-iconPOS-order-history</item>
+                                                    </item>
+                                                </item>
+                                                <item name="customer" xsi:type="array">
+                                                    <item name="sortOrder" xsi:type="string">1</item>
+                                                    <item name="component" xsi:type="string">Bkademy_Webpos/js/view/menu/item</item>
+                                                    <item name="data" xsi:type="array">
+                                                        <item name="id" xsi:type="string">customer</item>
+                                                        <item name="title" xsi:type="string">Customers</item>
+                                                        <item name="container" xsi:type="string">customer_list</item>
+                                                        <item name="is_display" xsi:type="string">1</item>
+                                                        <item name="icon_class" xsi:type="string">icon-iconPOS-customer-list</item>
                                                     </item>
                                                 </item>
                                             </item>
