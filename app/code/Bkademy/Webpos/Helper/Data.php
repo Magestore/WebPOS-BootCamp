@@ -12,8 +12,4 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function getStoreConfig($path){
         return $this->scopeConfig->getValue($path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
-    
-    public function isLogin(){
-        return true;
-    }
 }
