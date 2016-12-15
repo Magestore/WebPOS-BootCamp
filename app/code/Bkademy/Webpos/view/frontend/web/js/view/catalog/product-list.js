@@ -41,16 +41,22 @@ define([
                 '&searchCriteria[filterGroups][0][filters][0][conditionType]=eq'
                 , params);
             var payload = {};
+            $('#product-list-overlay').show();
             storage.get(
                 serviceUrl, JSON.stringify(payload)
             ).done(function (response) {
                 self.product(response.items);
                 self.numberOfPage(response.total_count);
                 self.curPage(curPage);
+                $('#product-list-overlay').hide();
                 //self.hideLoader();
             }).fail(function (response) {
-
+                $('#product-list-overlay').hide();
             });
+        },
+
+        getAllCategories: function () {
+
         },
 
         searchProduct: function (key, curPage) {
@@ -63,6 +69,7 @@ define([
                 '&searchCriteria[filterGroups][0][filters][0][conditionType]=eq'
                 , params);
             var payload = {};
+            $('#product-list-overlay').show();
             storage.get(
                 serviceUrl, JSON.stringify(payload)
             ).done(function (response) {
@@ -70,8 +77,9 @@ define([
                 self.numberOfPage(response.total_count);
                 self.curPage(curPage);
                 //self.hideLoader();
+                $('#product-list-overlay').hide();
             }).fail(function (response) {
-
+                $('#product-list-overlay').hide();
             });
         },
 
