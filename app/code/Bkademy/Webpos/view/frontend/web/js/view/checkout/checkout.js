@@ -55,7 +55,7 @@ define(
             }),
             placeOrder: function(){
                 if((!CheckoutModel.selectedPayments() || CheckoutModel.selectedPayments().length <= 0)
-                    && Totals.grandTotal() > 0){
+                    && Totals.getGrandTotal() > 0){
                     alert("Please select the payment method");
                     return false;
                 }
@@ -66,7 +66,7 @@ define(
                 }
 
                 if(!CartModel.hasQuote()){
-                    alert("The quote does not exist for online checkout");
+                    alert("The quote does not exist");
                     return false;
                 }
                 CheckoutModel.placeOrder();

@@ -24,15 +24,6 @@ define(
                 var self = this;
                 deferred = (deferred)?deferred:$.Deferred();
                 var serviceUrl = urlBuilder.createUrl(apiUrl, {});
-
-                var sessionId = '123456789';
-                if (serviceUrl.indexOf("?") != -1) {
-                    serviceUrl = serviceUrl + '&session=' + sessionId
-                }
-                else {
-                    serviceUrl = serviceUrl + '?session=' + sessionId;
-                }
-
                 storage.post(
                     serviceUrl, JSON.stringify(params)
                 ).done(

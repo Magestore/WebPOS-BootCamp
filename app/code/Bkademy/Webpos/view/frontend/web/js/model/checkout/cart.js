@@ -179,11 +179,7 @@ define(
             getQuoteInitParams: function(){
                 var self = this;
                 return {
-                    quote_id: DataManager.getData(self.KEY.QUOTE_ID),
-                    store_id: DataManager.getData(self.KEY.STORE_ID),
-                    customer_id: DataManager.getData(self.KEY.CUSTOMER_ID),
-                    currency_id: DataManager.getData(self.KEY.CURRENCY_ID),
-                    till_id: DataManager.getData(self.KEY.TILL_ID)
+                    quote_id: DataManager.getData(self.KEY.QUOTE_ID)
                 };
             },
             /**
@@ -211,22 +207,19 @@ define(
              * @returns {*}
              */
             saveQuoteBeforeCheckout: function(saveBeforeRemove){
-                // var self = this;
-                // var params = self.getQuoteInitParams();
-                // params.items = self.getItemsInfo();
-                // params.customer = self.getQuoteCustomerParams();
-                // if(saveBeforeRemove == true){
-                //     params.section = self.KEY.QUOTE_INIT;
-                // }
-                // self.loading(true);
-                // var apiRequest = $.Deferred();
-                // CartResource().saveQuoteBeforeCheckout(params, apiRequest);
-                //
-                // apiRequest.always(function(){
-                //     self.loading(false);
-                // });
-                // return apiRequest;
-                Event.dispatch('go_to_checkout_page', '');
+                var self = this;
+                var params = self.getQuoteInitParams();
+                params.items = self.getItemsInfo();
+                params.customer = self.getQuoteCustomerParams();
+                params.section = (saveBeforeRemove == true)?self.KEY.QUOTE_INIT:[];
+                self.loading(true);
+                var apiRequest = $.Deferred();
+                CartResource().saveQuoteBeforeCheckout(params, apiRequest);
+
+                apiRequest.always(function(){
+                    self.loading(false);
+                });
+                return apiRequest;
             },
             /**
              * Call API to empty cart - remove quote
