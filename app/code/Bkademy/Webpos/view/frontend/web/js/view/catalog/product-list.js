@@ -8,8 +8,9 @@ define([
     'mage/storage',
     'ko',
     'Bkademy_Webpos/js/model/url-builder',
-    'Magento_Catalog/js/price-utils'
-], function ($, Component, storage, ko, urlBuilder, priceUtils) {
+    'Magento_Catalog/js/price-utils',
+    'Bkademy_Webpos/js/model/catalog/product/detail-popup'
+], function ($, Component, storage, ko, urlBuilder, priceUtils, detailPopup) {
     'use strict';
 
     return Component.extend({
@@ -102,6 +103,22 @@ define([
         },
         addToCart :function (data) {
             
+        },
+
+        showPopupDetails: function (item,event) {
+            detailPopup.itemData(item);
+            $("#popup-product-detail").show();
+            $("#popup-product-detail").removeClass("fade");
+            $(".wrap-backover").show();
+
+            $(document).click(function(e) {
+                if( e.target.id == 'popup-product-detail') {
+                    $("#popup-product-detail").hide();
+                    $(".wrap-backover").hide();
+                    $('.notification-bell').show();
+                    $('#c-button--push-left').show();
+                }
+            });
         }
     });
 });

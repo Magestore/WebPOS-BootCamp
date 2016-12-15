@@ -51,13 +51,8 @@
                                         <span>Available qty: </span>
                                         <label data-bind="text: stock"></label>
                                     </div>
-                                    <a data-target="#popup-product-details" data-toggle="modal"
-                                       class="info" href="#"
-                                       title="View product details">
-                                                            <span class="icon-iconPOS-detail">
-                                                                <span class="path1"></span>
-                                                                <span class="path2"></span>
-                                                            </span>
+                                    <a data-target="#popup-product-details" data-toggle="modal" class="info" href="#" data-bind="click: $parent.showPopupDetails.bind($parent), attr: {'title': $t('View product details')}">
+                                        <span class="icon-iconPOS-detail"><span class="path1"></span><span class="path2"></span></span>
                                     </a>
                                 </div>
 
@@ -98,3 +93,13 @@
         </div>
     </footer>
 </div>
+
+<!-- Popup Product detail -->
+<div id="webpos_catalog_product_detail_popup" class="modal fade customer-popup-form" role="dialog" data-bind="scope:'webpos_catalog_product_detail_popup'">
+    <!-- ko template: getTemplate() --><!-- /ko -->
+</div>
+
+
+<style type="text/css">
+    .scroll-grid {height: 400px; overflow-x: auto;}
+</style>
