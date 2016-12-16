@@ -18,7 +18,7 @@ class Collection extends \Magento\Sales\Model\ResourceModel\Order\Collection imp
      */
     protected function _construct()
     {
-        $this->_init('Bkademy\Webpos\Model\Repository\Sales\Order', 'Magento\Sales\Model\ResourceModel\Order');
+        $this->_init('Bkademy\Webpos\Model\Sales\Order', 'Magento\Sales\Model\ResourceModel\Order');
         $this->addFilterToMap(
             'entity_id',
             'main_table.entity_id'

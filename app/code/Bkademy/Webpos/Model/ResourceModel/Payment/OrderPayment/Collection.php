@@ -28,6 +28,6 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      */
     protected function _construct()
     {
-        $this->_init('Bkademy\Webpos\Model\Repository\Payment\OrderPayment', 'Bkademy\Webpos\Model\ResourceModel\Payment\OrderPayment');
+        $this->_init('Bkademy\Webpos\Model\Payment\OrderPayment', 'Bkademy\Webpos\Model\ResourceModel\Payment\OrderPayment');
     }
 }

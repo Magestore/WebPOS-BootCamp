@@ -5,7 +5,7 @@
  *  See COPYING.txt for license details.
  *
  */
-namespace Bkademy\Webpos\Model\Repository\Sales;
+namespace Bkademy\Webpos\Model\Sales;
 
 use Bkademy\Webpos\Api\Data\Sales\OrderInterface;
 use Bkademy\Webpos\Api\Data\Checkout\InfoBuyInterface;
@@ -397,6 +397,7 @@ class Order extends \Magento\Sales\Model\Order implements \Magento\Sales\Model\E
      */
     public function getWebposOrderPayments()
     {
+        return;
         if($this->getData(OrderInterface::WEBPOS_ORDER_PAYMENTS) == null){
             $this->setData(
                 OrderInterface::WEBPOS_ORDER_PAYMENTS,
