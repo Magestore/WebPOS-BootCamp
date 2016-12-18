@@ -61,4 +61,87 @@
         </resources>
     </route>
     <!-- End Staff api -->
+
+    <!-- order api-->
+    <route url="/V1/webpos/orders/:id" method="GET">
+        <service class="Bkademy\Webpos\Api\Sales\OrderRepositoryInterface" method="get"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+
+    <route url="/V1/webpos/orders" method="GET">
+        <service class="Bkademy\Webpos\Api\Sales\OrderRepositoryInterface" method="getList"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+    <route url="/V1/webpos/orders/:id/cancel" method="POST">
+        <service class="Bkademy\Webpos\Api\Sales\OrderRepositoryInterface" method="cancel"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+    <route url="/V1/webpos/orders/:id/emails" method="POST">
+        <service class="Bkademy\Webpos\Api\Sales\OrderRepositoryInterface" method="notify"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+    <route url="/V1/webpos/orders/:id/comments" method="POST">
+        <service class="Bkademy\Webpos\Api\Sales\OrderRepositoryInterface" method="addComment"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+    <route url="/V1/webpos/orders/:id/unhold" method="POST">
+        <service class="Bkademy\Webpos\Api\Sales\OrderRepositoryInterface" method="unhold"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+    <!-- end order api -->
+
+    <!-- webpos order payment api -->
+    <route url="/V1/webpos/orders/:id/payments" method="POST">
+        <service class="Bkademy\Webpos\Api\Sales\PaymentRepositoryInterface" method="takePayment"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+    <!-- end webpos order payment api -->
+
+    <!-- invoice api -->
+    <route url="/V1/webpos/invoices/" method="POST">
+        <service class="Magento\Sales\Api\InvoiceRepositoryInterface" method="save"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+    <route url="/V1/webpos/invoices/create" method="POST">
+        <service class="Bkademy\Webpos\Api\Sales\InvoiceRepositoryInterface" method="saveInvoice"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+    <!-- end invoice api -->
+
+    <!-- shipment api-->
+    <route url="/V1/webpos/shipment/create" method="POST">
+        <service class="Bkademy\Webpos\Api\Sales\ShipmentRepositoryInterface" method="saveShipment"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+    <!-- end shipment api-->
+
+    <!-- creditmemo api -->
+    <route url="/V1/webpos/creditmemo/create" method="POST">
+        <service class="Bkademy\Webpos\Api\Sales\CreditmemoRepositoryInterface" method="saveCreditmemo"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+    <!-- end creditmemo api -->
+
 </routes>

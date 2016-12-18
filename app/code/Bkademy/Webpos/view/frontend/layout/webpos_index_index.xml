@@ -2,6 +2,7 @@
 
 <page layout='webpos' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd" >
     <update handle="webpos_product_list"/>
+    <update handle="webpos_sales_order"/>
     <update handle="webpos_cart"/>
     <update handle="webpos_customer"/>
     <head>
