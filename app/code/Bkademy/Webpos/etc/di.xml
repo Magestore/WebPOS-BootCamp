@@ -35,11 +35,6 @@
     <preference for="Bkademy\Webpos\Api\Catalog\ProductInterface" type="Bkademy\Webpos\Model\Catalog\Product"/>
     <!-- end product api -->
 
-    <!-- staff api -->
-    <preference for="Bkademy\Webpos\Api\Staff\StaffRepositoryInterface"
-                type="Bkademy\Webpos\Model\Repository\Staff\StaffRepository"/>
-    <!-- end staff api -->
-
     <!-- category api -->
     <preference for="Bkademy\Webpos\Api\Catalog\CategoryRepositoryInterface"
                 type="Bkademy\Webpos\Model\Catalog\CategoryRepository"/>
