@@ -55,12 +55,11 @@
         </resources>
     </route>
 
+
     <route url="/V1/webpos/orders" method="GET">
         <service class="Bkademy\Webpos\Api\Sales\OrderRepositoryInterface" method="getList"/>
-        <resources>
-            <resource ref="Bkademy_Webpos::webpos" />
-        </resources>
-    </route>
+   
+
     <route url="/V1/webpos/orders/:id/cancel" method="POST">
         <service class="Bkademy\Webpos\Api\Sales\OrderRepositoryInterface" method="cancel"/>
         <resources>
@@ -128,5 +127,21 @@
         </resources>
     </route>
     <!-- end creditmemo api -->
+
+	 <!-- Staff api -->
+    <route url="/V1/webpos/staff/login" method="POST">
+        <service class="Bkademy\Webpos\Api\Staff\StaffRepositoryInterface" method="login"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+    
+ 	<route url="/V1/webpos/staff/logout" method="POST">
+        <service class="Bkademy\Webpos\Api\Staff\StaffRepositoryInterface" method="logout"/>
+        <resources>
+            <resource ref="Bkademy_Webpos::webpos" />
+        </resources>
+    </route>
+    <!-- End Staff api -->
 
 </routes>
