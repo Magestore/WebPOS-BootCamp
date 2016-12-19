@@ -1,7 +1,7 @@
 <?php
 
 /**
- *  Copyright © 2016 Bkademy. All rights reserved.
+ *  Copyright © 2016 Magestore. All rights reserved.
  *  See COPYING.txt for license details.
  *
  */
@@ -9,7 +9,7 @@
 namespace Bkademy\Webpos\Model\Source\Adminhtml;
 
 /**
- * class \Bkademy\Webpos\Model\Source\Adminhtml\CustomerGroup
+ * class \Magestore\Webpos\Model\Source\Adminhtml\CustomerGroup
  * 
  * Web POS CustomerGroup source model
  * Use to get magento customer group
@@ -19,14 +19,14 @@ namespace Bkademy\Webpos\Model\Source\Adminhtml;
  *  getOptionArray
  *  toOptionArray
  * 
- * @category    Bkademy
- * @package     Bkademy_Webpos
+ * @category    Magestore
+ * @package     Magestore_Webpos
  * @module      Webpos
- * @author      Bkademy Developer
+ * @author      Magestore Developer
  */
 /**
  * Class CustomerGroup
- * @package Bkademy\Webpos\Model\Source\Adminhtml
+ * @package Magestore\Webpos\Model\Source\Adminhtml
  */
 class CustomerGroup implements \Magento\Framework\Option\ArrayInterface {
     
@@ -109,7 +109,7 @@ class CustomerGroup implements \Magento\Framework\Option\ArrayInterface {
      */
     public function getAllCustomerByCurrentStaff()
     {
-        $staffModel = $this->_objectManager->get('Bkademy\Webpos\Helper\Permission')
+        $staffModel = $this->_objectManager->get('Magestore\Webpos\Helper\Permission')
             ->getCurrentStaffModel();
         if ($staffModel->getId()) {
             $staffOfGroup = explode(',', $staffModel->getCustomerGroup());
@@ -163,7 +163,7 @@ class CustomerGroup implements \Magento\Framework\Option\ArrayInterface {
      */
     public function getAllowCustomerGroups() {
         $customer_group = array();
-        $posSession = $this->_objectManager->get('Bkademy\Webpos\Model\WebPosSession');
+        $posSession = $this->_objectManager->get('Magestore\Webpos\Model\WebPosSession');
         $user = $posSession->getUser();
         if ($user->getId() != '') {
             $customer_group = explode(',', $user->getData('customer_group'));
