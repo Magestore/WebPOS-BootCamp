@@ -68,7 +68,7 @@ define([
             var serviceUrl = urlBuilder.createUrl('/webpos/products?searchCriteria[pageSize]=16' +
                 '&filterOr=1' +
                 '&searchCriteria[currentPage]='+curPage +
-                '&searchCriteria[filterGroups][0][filters][0][field]=sku' +
+                '&searchCriteria[filterGroups][0][filters][0][field]=name' +
                 '&searchCriteria[filterGroups][0][filters][0][value]=%' + key + '%' +
                 '&searchCriteria[filterGroups][0][filters][0][conditionType]=like'
                 , params);
