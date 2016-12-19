@@ -8,37 +8,31 @@ define([
     'mage/storage',
     'ko',
     'Bkademy_Webpos/js/model/url-builder',
-    'Magento_Catalog/js/price-utils',
-    'Bkademy_Webpos/js/model/sales/order/status',
-    'Bkademy_Webpos/js/helper/datetime',
-    // 'Bkademy_Webpos/js/helper/price'
-], function ($, Component, storage, ko, urlBuilder, priceUtils, orderStatus,
-            datetimeHelper
-             // priceHelper
-) {
+    'Bkademy_Webpos/js/model/sales/order/status'
+], function ($, Component, storage, ko, urlBuilder, orderStatus) {
     'use strict';
 
     return Component.extend({
-
-
         defaults: {
-            template: 'Bkademy_Webpos/sales/order/list',
+            template: 'Bkademy_Webpos/sales/order/list'
         },
-        groupDays: [],
         items: ko.observableArray([]),
+        groupDays: [],
         statusObject: orderStatus.getStatusObject(),
-        curPage: ko.observable(1),
-        numberOfPage: ko.observable(0),
+        statusArrayDefault: orderStatus.getStatusArray(),
         searchKey: ko.observable(''),
-        quote: ko.observableArray([]),
+        pageSize: 1000,
+        selectedOrder: ko.observable(null),
+        numberOfPage: ko.observable(1),
+        curPage: ko.observable(1),
 
         initialize: function () {
             var self = this;
             this._super();
-            self.showProduct(1);
+            self.showList(1);
         },
 
-        showProduct: function (pageNumber) {
+        showList: function (pageNumber) {
             var self = this;
             var itemsOrder = [];
             var params = {};
@@ -47,6 +41,7 @@ define([
             storage.get(
                 serviceUrl, JSON.stringify(payload)
             ).done(function (response) {
+                console.log(response);
                 var orderList = response.items;
                 var dayIndex = -1;
                 $.each(orderList, function (index, value) {
@@ -78,6 +73,89 @@ define([
             }).fail(function (response) {
 
             });
+        },
+
+        lazyload: function (element, event) {
+            var scrollHeight = event.target.scrollHeight;
+            var clientHeight = event.target.clientHeight;
+            var scrollTop = event.target.scrollTop;
+            if (scrollHeight - (clientHeight + scrollTop) <= 0 && this.canLoad() === true) {
+                this.startLoading();
+                this.pageSize += 10;
+                this.refresh = false;
+                this._prepareItems();
+            }
+        },
+
+        _processResponse: function (response) {
+            var self = this;
+            var items = [];
+            var orderList = response.items;
+            var dayIndex = -1;
+            this.currentItemIsExist = false;
+            $.each(orderList, function (index, value) {
+                var createdAt = value.created_at;
+                var day = createdAt.split(' ')[0];
+                if (self.groupDays.indexOf(day.toString()) == -1) {
+                    dayIndex++;
+                    self.groupDays.push(day);
+                    items[dayIndex] = {};
+                    items[dayIndex].day = day;
+                    items[dayIndex].orderItems = [];
+                    items[dayIndex].orderItems.push(value);
+                } else {
+                    if (items[self.groupDays.indexOf(day.toString())]) {
+                        items[self.groupDays.indexOf(day.toString())].orderItems.push(value);
+                    } else {
+                        items[self.groupDays.indexOf(day.toString())] = {};
+                        items[self.groupDays.indexOf(day.toString())].day = day;
+                        items[self.groupDays.indexOf(day.toString())].orderItems = [];
+                        items[self.groupDays.indexOf(day.toString())].orderItems.push(value);
+                    }
+                }
+                if (self.selectedOrder() == value.entity_id) {
+                    self.currentItemIsExist = true;
+                }
+            });
+            if (!this.currentItemIsExist)
+                this.loadItem(orderList[0]);
+            return items;
+        },
+
+        formatDateGroup: function (dateString) {
+            var date = "";
+            if (!dateString) {
+                date = new Date();
+            } else {
+                date = new Date(dateString);
+            }
+            var month = date.getMonth() + 1;
+            if (month < 10) {
+                month = "0" + month;
+            }
+            return date.getDate() + '/' + month + '/' + date.getFullYear();
+        },
+
+        filterStatus: function (data, event) {
+            this.isOnline = false;
+            var el = $(event.currentTarget);
+            if (el.hasClass('selected')) {
+                el.removeClass('selected');
+                this.statusArray.splice(this.statusArray.indexOf(el.attr('status')), 1);
+            }
+            else {
+                el.addClass('selected');
+                this.statusArray.push(el.attr('status'));
+            }
+            this._prepareItems();
+        },
+
+        resetFilterStatus: function () {
+            var self = this;
+            this.statusArray = [];
+            $.each($(this.statusBtn), function (index, value) {
+                $(value).removeClass('selected');
+            })
         },
 
         loadItem: function (data, event) {
@@ -132,39 +210,33 @@ define([
             return (data.created_at);
         },
 
-        formatDateGroup: function (dateString) {
-            var date = "";
-            if (!dateString) {
-                date = new Date();
-            } else {
-                date = new Date(dateString);
-            }
-            var month = date.getMonth() + 1;
-            if (month < 10) {
-                month = "0" + month;
-            }
-            return date.getDate() + '/' + month + '/' + date.getFullYear();
+        /**
+         * return a date time with format: 15:26 PM
+         * @param dateString
+         * @returns {string}
+         */
+        getTime: function (dateString) {
+            return datetimeHelper.getTime(dateString);
         },
 
-        //
-        // formatPrice: function (price) {
-        //     return priceUtils.formatPrice(price, window.webposConfig.priceFormat);
-        // },
-        //
-        // filter: function () {
-        //
-        // },
-        //
-        // previous: function () {
-        //
-        // },
-        //
-        // next: function () {
-        //
-        // },
-        //
-        // addToCart: function (data) {
-        //
-        // }
+        formatPrice: function (price) {
+
+        },
+
+        lazyload: function() {
+
+        },
+
+        filter: function () {
+
+        },
+
+        showCreateForm: function(){
+
+        },
+
+        isSearchable: function(){
+
+        }
     });
 });
