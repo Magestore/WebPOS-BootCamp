@@ -27,23 +27,33 @@
     <!-- end rewrite api controller -->
     <!-- product api -->
     <preference for="Bkademy\Webpos\Api\Catalog\ProductRepositoryInterface"
-                type="Bkademy\Webpos\Model\Repository\Catalog\ProductRepository"/>
+                type="Bkademy\Webpos\Model\Catalog\ProductRepository"/>
     <preference for="Bkademy\Webpos\Api\Catalog\SwatchRepositoryInterface"
-                type="Bkademy\Webpos\Model\Repository\Catalog\SwatchRepository"/>
+                type="Bkademy\Webpos\Model\Catalog\SwatchRepository"/>
     <preference for="Bkademy\Webpos\Api\Data\Catalog\SwatchResultInterface"
                 type="Magento\Framework\Api\SearchResults"/>
-    <preference for="Bkademy\Webpos\Api\Catalog\ProductInterface" type="Bkademy\Webpos\Model\Repository\Catalog\Product"/>
+    <preference for="Bkademy\Webpos\Api\Catalog\ProductInterface" type="Bkademy\Webpos\Model\Catalog\Product"/>
     <!-- end product api -->
-
-    <!-- staff api -->
-    <preference for="Bkademy\Webpos\Api\Staff\StaffRepositoryInterface"
-                type="Bkademy\Webpos\Model\Repository\Staff\StaffRepository"/>
-    <!-- end staff api -->
 
     <!-- category api -->
     <preference for="Bkademy\Webpos\Api\Catalog\CategoryRepositoryInterface"
-                type="Bkademy\Webpos\Model\Repository\Catalog\CategoryRepository"/>
+                type="Bkademy\Webpos\Model\Catalog\CategoryRepository"/>
     <!-- end category api -->
+
+    <!-- order api -->
+    <preference for="Bkademy\Webpos\Api\Sales\OrderRepositoryInterface"
+                type="Bkademy\Webpos\Model\Sales\OrderRepository"/>
+    <preference for="Bkademy\Webpos\Api\Data\Sales\OrderSearchResultInterface"
+                type="Bkademy\Webpos\Model\ResourceModel\Sales\Order\Collection"/>
+    <preference for="Bkademy\Webpos\Api\Data\Sales\OrderInterface" type="Bkademy\Webpos\Model\Sales\Order"/>
+    <!-- end order api -->
+
+    <!-- webpos order payment api -->
+    <preference for="Bkademy\Webpos\Api\Sales\PaymentRepositoryInterface"
+                type="Bkademy\Webpos\Model\Sales\Order\PaymentRepository"/>
+    <preference for="Bkademy\Webpos\Api\Data\Payment\OrderPaymentInterface"
+                type="Bkademy\Webpos\Model\Payment\OrderPayment"/>
+    <!-- end webpos order payment api -->
 
     <type name="Bkademy\Webpos\Model\WebposConfigProvider\CompositeConfigProvider">
         <arguments>

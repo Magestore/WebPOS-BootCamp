@@ -9,9 +9,8 @@ define([
     'ko',
     'Bkademy_Webpos/js/model/url-builder',
     'Bkademy_Webpos/js/model/checkout/cart',
-    'Magento_Catalog/js/price-utils',
-    'Bkademy_Webpos/js/model/catalog/product/detail-popup'
-], function ($, Component, storage, ko, urlBuilder, CartModel, priceUtils, detailPopup) {
+    'Magento_Catalog/js/price-utils'
+], function ($, Component, storage, ko, urlBuilder, CartModel, priceUtils) {
     'use strict';
 
     return Component.extend({
@@ -43,22 +42,16 @@ define([
                 '&searchCriteria[filterGroups][0][filters][0][conditionType]=eq'
                 , params);
             var payload = {};
-            $('#product-list-overlay').show();
             storage.get(
                 serviceUrl, JSON.stringify(payload)
             ).done(function (response) {
                 self.product(response.items);
                 self.numberOfPage(response.total_count);
                 self.curPage(curPage);
-                $('#product-list-overlay').hide();
                 //self.hideLoader();
             }).fail(function (response) {
-                $('#product-list-overlay').hide();
+
             });
-        },
-
-        getAllCategories: function () {
-
         },
 
         searchProduct: function (key, curPage) {
@@ -71,7 +64,6 @@ define([
                 '&searchCriteria[filterGroups][0][filters][0][conditionType]=eq'
                 , params);
             var payload = {};
-            $('#product-list-overlay').show();
             storage.get(
                 serviceUrl, JSON.stringify(payload)
             ).done(function (response) {
@@ -79,9 +71,8 @@ define([
                 self.numberOfPage(response.total_count);
                 self.curPage(curPage);
                 //self.hideLoader();
-                $('#product-list-overlay').hide();
             }).fail(function (response) {
-                $('#product-list-overlay').hide();
+
             });
         },
 
@@ -102,23 +93,7 @@ define([
             var curPage = this.curPage();
             this.searchProduct(this.searchKey(), curPage - 1);
         },
-
-        showPopupDetails: function (item,event) {
-            detailPopup.itemData(item);
-            $("#popup-product-detail").show();
-            $("#popup-product-detail").removeClass("fade");
-            $(".wrap-backover").show();
-
-            $(document).click(function(e) {
-                if( e.target.id == 'popup-product-detail') {
-                    $("#popup-product-detail").hide();
-                    $(".wrap-backover").hide();
-                    $('.notification-bell').show();
-                    $('#c-button--push-left').show();
-                }
-            });
-        },
-
+            
         addToCart: function (data) {
             var infoBuy = {
                 'product_id': data.id,
