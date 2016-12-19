@@ -4,7 +4,6 @@ namespace Bkademy\Webpos\Model;
 
 class Staff extends \Magento\Framework\Model\AbstractModel
 {
-
     /**
      *
      */
@@ -19,6 +18,38 @@ class Staff extends \Magento\Framework\Model\AbstractModel
      */
     const MIN_PASSWORD_LENGTH = 7;
 
+    /**
+     * @var \Magento\Framework\Encryption\EncryptorInterface
+     */
+    protected $encryptor;
+
+    /**
+     * Staff constructor.
+     * @param \Magento\Framework\Model\Context $context
+     * @param \Magento\Framework\Registry $registry
+     * @param \Magento\User\Helper\Data $userData
+     * @param \Magento\Backend\App\ConfigInterface $config
+     * @param \Magento\Framework\Validator\DataObjectFactory $validatorObjectFactory
+     * @param \Magento\Authorization\Model\RoleFactory $roleFactory
+     * @param \Magento\Framework\Mail\Template\TransportBuilder $transportBuilder
+     * @param \Magento\Framework\Encryption\EncryptorInterface $encryptor
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Framework\Model\ResourceModel\AbstractResource|null $resource
+     * @param \Magento\Framework\Data\Collection\AbstractDb|null $resourceCollection
+     * @param array $data
+     */
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \Magento\Authorization\Model\RoleFactory $roleFactory,
+        \Magento\Framework\Encryption\EncryptorInterface $encryptor,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
+        $this->encryptor = $encryptor;
+    }
 
     /**
      *
@@ -68,4 +99,38 @@ class Staff extends \Magento\Framework\Model\AbstractModel
         return $errors;
     }
 
+
+    /**
+     * @param $username
+     * @return $this
+     */
+    public function loadByUsername($username) {
+        $staffs = $this->getCollection()->addFieldToFilter('username', $username);
+        if ($id = $staffs->getFirstItem()->getId())
+            $this->load($id);
+        return $this;
+    }
+
+
+    /**
+     * @param $login
+     * @param $password
+     * @return bool
+     */
+    public function authenticate($login, $password) {
+        $this->loadByUsername($login);
+        if (!$this->validatePassword($password)) 
+            return false;
+        return true;
+    }
+
+
+    /**
+     * @param $password
+     * @return bool
+     */
+    public function validatePassword($password) {
+        return $this->getPassword() == $password ? true : false;
+    }
+    
 }
