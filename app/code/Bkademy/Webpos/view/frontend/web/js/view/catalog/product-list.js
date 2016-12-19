@@ -24,6 +24,7 @@ define([
 
         product: ko.observableArray([]),
         curPage: ko.observable(1),
+        numberOfProduct: ko.observable(0),
         numberOfPage: ko.observable(0),
         searchKey: ko.observable(''),
         quote: ko.observableArray([]),
@@ -49,7 +50,8 @@ define([
                 serviceUrl, JSON.stringify(payload)
             ).done(function (response) {
                 self.product(response.items);
-                self.numberOfPage(response.total_count);
+                self.numberOfProduct(response.total_count);
+                self.numberOfPage(response.total_count/16 + 1);
                 self.curPage(curPage);
                 $('#product-list-overlay').hide();
                 //self.hideLoader();
@@ -68,9 +70,12 @@ define([
             var serviceUrl = urlBuilder.createUrl('/webpos/products?searchCriteria[pageSize]=16' +
                 '&filterOr=1' +
                 '&searchCriteria[currentPage]='+curPage +
-                '&searchCriteria[filterGroups][0][filters][0][field]=name' +
-                '&searchCriteria[filterGroups][0][filters][0][value]=%' + key + '%' +
-                '&searchCriteria[filterGroups][0][filters][0][conditionType]=like'
+                '&searchCriteria[filterGroups][0][filters][0][field]=type_id' +
+                '&searchCriteria[filterGroups][0][filters][0][value]=simple' +
+                '&searchCriteria[filterGroups][0][filters][0][conditionType]=eq' +
+                '&searchCriteria[filterGroups][1][filters][1][field]=name' +
+                '&searchCriteria[filterGroups][1][filters][1][value]=%' + key + '%' +
+                '&searchCriteria[filterGroups][1][filters][1][conditionType]=like'
                 , params);
             var payload = {};
             $('#product-list-overlay').show();
@@ -78,7 +83,8 @@ define([
                 serviceUrl, JSON.stringify(payload)
             ).done(function (response) {
                 self.product(response.items);
-                self.numberOfPage(response.total_count);
+                self.numberOfProduct(response.total_count);
+                self.numberOfPage(response.total_count/16 + 1);
                 self.curPage(curPage);
                 //self.hideLoader();
                 $('#product-list-overlay').hide();
