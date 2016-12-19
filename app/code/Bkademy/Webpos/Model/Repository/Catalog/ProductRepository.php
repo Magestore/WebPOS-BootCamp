@@ -48,12 +48,7 @@ class ProductRepository extends \Magento\Catalog\Model\ProductRepository
             $collection->addAttributeToFilter('status', \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED);
             //Add filters from root filter group to the collection
             foreach ($searchCriteria->getFilterGroups() as $group) {
-                if (!$request->getParam('filterOr')) {
-                    $this->addFilterGroupToCollection($group, $collection);
-                } else {
-                    $this->addFilterOrGroupToCollection($group, $collection);
-                }
-
+                $this->addFilterGroupToCollection($group, $collection);
             }
             $collection->addVisibleFilter();
             $this->_productCollection = $collection;

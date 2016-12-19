@@ -75,16 +75,14 @@
             </div>
             <div id="productPager">
                 <ul class="pagination-pos" style="margin-top: 0px">
-                    <!-- ko if: (curPage > 1) -->
                     <li style="float: left"><span data-bind="click: previous" class="icon-iconPOS-previous" aria-hidden="true"></span></li>
-                    <!--/ko-->
                     <li class="pager-list"><span class="pager" data-bind="text: curPage"></span></li>
                     <li style="float: left">
                         <span class="icon-iconPOS-next" data-bind="click: next" aria-hidden="true"></span>
                     </li>
                 </ul>
             </div>
-            <label class="custom-sale pos_modal_link" data-toggle="modal"
+            <label class="custom-sale pos_modal_link" style="visibility: hidden" data-toggle="modal"
                    data-target="#popup-custom-sale">
                 <span class="icon-iconPOS-customer-sale"></span>
                 <span class="pos_modal_link">Custom sale</span>
