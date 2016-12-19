@@ -179,7 +179,8 @@ define(
             getQuoteInitParams: function(){
                 var self = this;
                 return {
-                    quote_id: DataManager.getData(self.KEY.QUOTE_ID)
+                    // quote_id: DataManager.getData(self.KEY.QUOTE_ID)
+                    quote_id: '2'
                 };
             },
             /**
@@ -277,6 +278,7 @@ define(
              * @returns {boolean}
              */
             hasQuote: function(){
+                return true;
                 var self = this;
                 return (DataManager.getData(self.KEY.QUOTE_ID))?true:false;
             },
