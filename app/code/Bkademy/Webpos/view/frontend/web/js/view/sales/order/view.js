@@ -13,7 +13,7 @@ define(
         // 'Bkademy_Webpos/js/model/sales/order-factory',
         // 'Bkademy_Webpos/js/view/layout',
         // 'underscore',
-        // 'mage/translate',
+        'mage/translate',
         // 'Bkademy_Webpos/js/view/base/abstract',
         // 'Bkademy_Webpos/js/model/sales/order/total',
         'Bkademy_Webpos/js/model/sales/order/status',
@@ -33,14 +33,14 @@ define(
         // OrderFactory,
         // ViewManager,
         // _,
-        // $t,
+        $t,
         // Component,
         // orderTotal,
         orderStatus
         // CheckoutModel,
         // eventmanager,
         // Checkout,
-        // priceHelper,
+        // priceHelper
         // datetimeHelper,
         // ReOrder
         ) {
@@ -63,14 +63,14 @@ define(
             isFirstLoad: true,
             defaults: {
                 template: 'Bkademy_Webpos/sales/order/view',
-                // templateTop: 'Bkademy_Webpos/sales/order/view/top',
-                // templateBilling: 'Bkademy_Webpos/sales/order/view/billing',
-                // templateShipping: 'Bkademy_Webpos/sales/order/view/shipping',
-                // templateShippingMethod: 'Bkademy_Webpos/sales/order/view/shipping-method',
-                // templatePaymentMethod: 'Bkademy_Webpos/sales/order/view/payment-method',
-                // templateTotal: 'Bkademy_Webpos/sales/order/view/total',
-                // templateItems: 'Bkademy_Webpos/sales/order/view/items',
-                // templateComments: 'Bkademy_Webpos/sales/order/view/comments',
+                templateTop: 'Bkademy_Webpos/sales/order/view/top',
+                templateBilling: 'Bkademy_Webpos/sales/order/view/billing',
+                templateShipping: 'Bkademy_Webpos/sales/order/view/shipping',
+                templateShippingMethod: 'Bkademy_Webpos/sales/order/view/shipping-method',
+                templatePaymentMethod: 'Bkademy_Webpos/sales/order/view/payment-method',
+                templateTotal: 'Bkademy_Webpos/sales/order/view/total',
+                templateItems: 'Bkademy_Webpos/sales/order/view/items',
+                templateComments: 'Bkademy_Webpos/sales/order/view/comments',
             },
 
             initialize: function () {
@@ -80,15 +80,15 @@ define(
                     return self.orderData();
                 }).subscribe(function () {
                     if (self.orderData()) {
-                        var orderModel = OrderFactory.get();
-                        self.isCanceled(orderModel.setData(self.orderData()).isCanceled());
-                        self.canInvoice(orderModel.setData(self.orderData()).canInvoice());
-                        self.canCancel(orderModel.setData(self.orderData()).canCancel());
-                        self.canShip(orderModel.setData(self.orderData()).canShip());
-                        self.canCreditmemo(orderModel.setData(self.orderData()).canCreditmemo());
-                        self.canSync(orderModel.setData(self.orderData()).canSync());
-                        self.canTakePayment(orderModel.setData(self.orderData()).canTakePayment())
-                        self.canUnhold(orderModel.setData(self.orderData()).canUnhold())
+                        // var orderModel = OrderFactory.get();
+                        // self.isCanceled(orderModel.setData(self.orderData()).isCanceled());
+                        // self.canInvoice(orderModel.setData(self.orderData()).canInvoice());
+                        // self.canCancel(orderModel.setData(self.orderData()).canCancel());
+                        // self.canShip(orderModel.setData(self.orderData()).canShip());
+                        // self.canCreditmemo(orderModel.setData(self.orderData()).canCreditmemo());
+                        // self.canSync(orderModel.setData(self.orderData()).canSync());
+                        // self.canTakePayment(orderModel.setData(self.orderData()).canTakePayment())
+                        // self.canUnhold(orderModel.setData(self.orderData()).canUnhold())
                     }
                 });
                 self.cannotSync = ko.pureComputed(function () {
@@ -124,46 +124,51 @@ define(
             },
             setData: function (data, object) {
                 this.orderData(data);
+                console.log(data);
                 this.orderListView(object);
                 this.isShowActionPopup(false);
                 var self = this;
                 this.totalValues([]);
-                var totalArray = orderTotal.getTotalOrderView();
-                if (self.orderData())
-                    $.each(totalArray, function (index, value) {
-                        var order_currency_code = self.orderData().order_currency_code;
-                        var current_currency_code = window.webposConfig.currentCurrencyCode;
-                        if (
-                            order_currency_code == current_currency_code
-                        ) {
-                            if ((self.orderData()[value.totalName] && self.orderData()[value.totalName] != 0) || value.required) {
-                                var totalCode = value.totalName.replace("base_", "");
-                                self.totalValues.push(
-                                    {
-                                        totalValue: (value.isPrice)?priceHelper.formatPrice(self.orderData()[totalCode]):self.orderData()[totalCode]+' '+value.valueLabel,
-                                        totalLabel: value.totalName == 'base_discount_amount' &&
-                                        (self.orderData().discount_description || self.orderData().coupon_code) ?
-                                        $t(value.totalLabel) + ' (' + (self.orderData().discount_description ?
-                                            self.orderData().discount_description : self.orderData().coupon_code) +
-                                        ')' : $t(value.totalLabel)
-                                    }
-                                );
-                            }
-                        } else {
-                            if ((self.orderData()[value.totalName] && self.orderData()[value.totalName] != 0) || value.required) {
-                                self.totalValues.push(
-                                    {
-                                        totalValue: (value.isPrice)?self.convertAndFormatPrice(self.orderData()[value.totalName]):self.orderData()[value.totalName]+' '+value.valueLabel,
-                                        totalLabel: value.totalName=='base_discount_amount'&&
-                                        (self.orderData().discount_description || self.orderData().coupon_code)?
-                                        $t(value.totalLabel)+' ('+(self.orderData().discount_description?
-                                            self.orderData().discount_description:self.orderData().coupon_code)+
-                                        ')':$t(value.totalLabel)
-                                    }
-                                );
-                            }
-                        }
-                    });
+                // var totalArray = orderTotal.getTotalOrderView();
+                // if (self.orderData())
+                //     $.each(totalArray, function (index, value) {
+                //         var order_currency_code = self.orderData().order_currency_code;
+                //         var current_currency_code = window.webposConfig.currentCurrencyCode;
+                //         if (
+                //             order_currency_code == current_currency_code
+                //         ) {
+                //             if ((self.orderData()[value.totalName] && self.orderData()[value.totalName] != 0) || value.required) {
+                //                 var totalCode = value.totalName.replace("base_", "");
+                //                 self.totalValues.push(
+                //                     {
+                //                         totalValue: (value.isPrice)?priceHelper.formatPrice(self.orderData()[totalCode]):self.orderData()[totalCode]+' '+value.valueLabel,
+                //                         totalLabel: value.totalName == 'base_discount_amount' &&
+                //                         (self.orderData().discount_description || self.orderData().coupon_code) ?
+                //                         $t(value.totalLabel) + ' (' + (self.orderData().discount_description ?
+                //                             self.orderData().discount_description : self.orderData().coupon_code) +
+                //                         ')' : $t(value.totalLabel)
+                //                     }
+                //                 );
+                //             }
+                //         } else {
+                //             if ((self.orderData()[value.totalName] && self.orderData()[value.totalName] != 0) || value.required) {
+                //                 self.totalValues.push(
+                //                     {
+                //                         totalValue: (value.isPrice)?self.convertAndFormatPrice(self.orderData()[value.totalName]):self.orderData()[value.totalName]+' '+value.valueLabel,
+                //                         totalLabel: value.totalName=='base_discount_amount'&&
+                //                         (self.orderData().discount_description || self.orderData().coupon_code)?
+                //                         $t(value.totalLabel)+' ('+(self.orderData().discount_description?
+                //                             self.orderData().discount_description:self.orderData().coupon_code)+
+                //                         ')':$t(value.totalLabel)
+                //                     }
+                //                 );
+                //             }
+                //         }
+                //     });
+            },
+
+            getData: function(){
+                return this.orderData();
             },
 
             showActionPopup: function (data, event) {
@@ -231,7 +236,7 @@ define(
 
             getPrice: function (label) {
                 if (this.orderData().order_currency_code == window.webposConfig.currentCurrencyCode) {
-                    return priceHelper.formatPrice(this.orderData()[label]);
+                    return (this.orderData()[label]);
                 }
                 return this.convertAndFormatPrice(
                     this.orderData()['base_' + label],
@@ -241,13 +246,13 @@ define(
 
             getGrandTotal: function () {
                 if (this.orderData().order_currency_code == window.webposConfig.currentCurrencyCode) {
-                    return priceHelper.formatPrice(this.orderData().grand_total);
+                    return (this.orderData().grand_total);
                 }
                 return this.convertAndFormatPrice(this.orderData().base_grand_total, this.orderData().base_currency_code)
             },
 
             convertAndFormatPrice: function (price, from, to) {
-                return priceHelper.convertAndFormat(price, from, to);
+                return price;
             },
 
             canShowComment: function () {
@@ -301,14 +306,15 @@ define(
             getWebposPaymentAmount: function (data) {
                 var order_currency_code = this.orderData().order_currency_code;
                 var current_currency_code = window.webposConfig.currentCurrencyCode;
-                var amount = priceHelper.currencyConvert(
-                    data.base_payment_amount,
-                    this.orderData().base_currency_code
-                );
+                // var amount = priceHelper.currencyConvert(
+                //     data.base_payment_amount,
+                //     this.orderData().base_currency_code
+                // );
+                var amount = data.base_payment_amount;
                 if (order_currency_code == current_currency_code) {
                     amount = data.payment_amount;
                 }
-                return (data.base_payment_amount == 0) ? this.convertAndFormatPrice(0) : priceHelper.formatPrice(amount);
+                return (data.base_payment_amount == 0) ? this.convertAndFormatPrice(0) : (amount);
             },
 
             getPaidPayment: function () {
@@ -360,7 +366,7 @@ define(
                 if (this.showWebposPayment() && this.orderData().base_total_due > 0) {
                     var allPayments = this.orderData().webpos_order_payments;
                     $.each(allPayments, function (index, payment) {
-                        if (priceHelper.toNumber(payment.base_payment_amount) == 0) {
+                        if ((payment.base_payment_amount) == 0) {
                             payments.push(payment);
                         }
                     });
