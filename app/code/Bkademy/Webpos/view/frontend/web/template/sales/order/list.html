@@ -33,7 +33,7 @@
                 <div class="title-time time-one" data-bind="text: $parent.formatDateGroup(day)"></div>
                 <ul class="list-orders" data-bind="foreach: orderItems">
 
-                    <li data-bind="attr: {class: 'order-item bg-cl-active ' + status},
+                    <li data-bind="attr: {class: 'order-item bg-cl-active ' + status}, click: $parents[1].loadItem($parents[1]),
                     css: {'selected': entity_id==$parents[1].selectedOrder.call()}">
                         <div class="item">
                             <div class="id-order">

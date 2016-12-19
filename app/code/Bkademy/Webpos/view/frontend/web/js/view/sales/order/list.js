@@ -8,8 +8,9 @@ define([
     'mage/storage',
     'ko',
     'Bkademy_Webpos/js/model/url-builder',
-    'Bkademy_Webpos/js/model/sales/order/status'
-], function ($, Component, storage, ko, urlBuilder, orderStatus) {
+    'Bkademy_Webpos/js/model/sales/order/status',
+    'Bkademy_Webpos/js/view/sales/order/view'
+], function ($, Component, storage, ko, urlBuilder, orderStatus, OrderView) {
     'use strict';
 
     return Component.extend({
@@ -29,6 +30,7 @@ define([
         initialize: function () {
             var self = this;
             this._super();
+            this.orderData = OrderView();
             self.showList(1);
         },
 
@@ -66,10 +68,12 @@ define([
                     }
                 });
                 self.items(itemsOrder);
-                console.log(itemsOrder);
                 self.numberOfPage(response.total_count);
                 self.curPage(pageNumber);
                 //self.hideLoader();
+                if(!self.orderData.getData() || !self.orderData.getData().id) {
+                    self.orderData.setData(response.items[0]);
+                }
             }).fail(function (response) {
 
             });
@@ -159,6 +163,7 @@ define([
         },
 
         loadItem: function (data, event) {
+            console.log(data);
             // var viewManager = require('Magestore_Webpos/js/view/layout');
             // eventManager.dispatch('sales_order_list_load_order', {'order': data});
             // if (!this.orderViewObject) {
@@ -166,7 +171,7 @@ define([
             // }
             // this.orderViewObject.setData(data, this);
             // viewManager.getSingleton('view/sales/order/action').setData(data, this);
-            // this.selectedOrder(data ? data.entity_id : null);
+            this.selectedOrder(data ? data.entity_id : null);
         },
 
         updateOrderListData: function (item) {
@@ -223,8 +228,8 @@ define([
 
         },
 
-        lazyload: function() {
-
+        loadCustomer: function(data) {
+            OrderView().setData(data);
         },
 
         filter: function () {
