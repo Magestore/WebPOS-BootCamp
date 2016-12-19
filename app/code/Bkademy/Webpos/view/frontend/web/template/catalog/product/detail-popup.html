@@ -20,19 +20,6 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="screen-shoot-detail">
-                                    <!-- ko if: itemData().images && itemData().images.length > 0 -->
-                                    <div id="product-img-slise" class="owl-carousel"
-                                         data-bind="foreach: itemData().images">
-                                        <div class="item">
-                                            <div class="img-cat">
-                                                <a href="#">
-                                                    <img data-bind="attr: {'src': $data}"/>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- /ko -->
-                                    <!-- ko if: itemData().images && itemData().images.length == 0 -->
                                     <div id="product-img-slise" class="owl-carousel">
                                         <div class="item">
                                             <div class="img-cat">
@@ -42,7 +29,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- /ko -->
                                 </div>
                             </div>
                             <div class="col-sm-6">
