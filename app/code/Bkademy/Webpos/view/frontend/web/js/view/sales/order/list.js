@@ -159,14 +159,14 @@ define([
         },
 
         loadItem: function (data, event) {
-            var viewManager = require('Magestore_Webpos/js/view/layout');
-            eventManager.dispatch('sales_order_list_load_order', {'order': data});
-            if (!this.orderViewObject) {
-                this.orderViewObject = viewManager.getSingleton('view/sales/order/view');
-            }
-            this.orderViewObject.setData(data, this);
-            viewManager.getSingleton('view/sales/order/action').setData(data, this);
-            this.selectedOrder(data ? data.entity_id : null);
+            // var viewManager = require('Magestore_Webpos/js/view/layout');
+            // eventManager.dispatch('sales_order_list_load_order', {'order': data});
+            // if (!this.orderViewObject) {
+            //     this.orderViewObject = viewManager.getSingleton('view/sales/order/view');
+            // }
+            // this.orderViewObject.setData(data, this);
+            // viewManager.getSingleton('view/sales/order/action').setData(data, this);
+            // this.selectedOrder(data ? data.entity_id : null);
         },
 
         updateOrderListData: function (item) {
