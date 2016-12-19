@@ -45,6 +45,21 @@
                 type="Bkademy\Webpos\Model\Repository\Catalog\CategoryRepository"/>
     <!-- end category api -->
 
+    <!-- order api -->
+    <preference for="Bkademy\Webpos\Api\Sales\OrderRepositoryInterface"
+                type="Bkademy\Webpos\Model\Sales\OrderRepository"/>
+    <preference for="Bkademy\Webpos\Api\Data\Sales\OrderSearchResultInterface"
+                type="Bkademy\Webpos\Model\ResourceModel\Sales\Order\Collection"/>
+    <preference for="Bkademy\Webpos\Api\Data\Sales\OrderInterface" type="Bkademy\Webpos\Model\Sales\Order"/>
+    <!-- end order api -->
+
+    <!-- webpos order payment api -->
+    <preference for="Bkademy\Webpos\Api\Sales\PaymentRepositoryInterface"
+                type="Bkademy\Webpos\Model\Sales\Order\PaymentRepository"/>
+    <preference for="Bkademy\Webpos\Api\Data\Payment\OrderPaymentInterface"
+                type="Bkademy\Webpos\Model\Payment\OrderPayment"/>
+    <!-- end webpos order payment api -->
+
     <type name="Bkademy\Webpos\Model\WebposConfigProvider\CompositeConfigProvider">
         <arguments>
             <argument name="configProviders" xsi:type="array">
