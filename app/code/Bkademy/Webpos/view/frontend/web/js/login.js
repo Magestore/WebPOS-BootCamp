@@ -45,13 +45,7 @@ define([
                     if(response==true)
                         window.location.reload();
                     else
-                        $.toaster(
-                            {
-                                priority: 'danger',
-                                title: Translate("Warning"),
-                                message: Translate("Your login information is wrong!")
-                            }
-                        );
+                        alert(Translate("Your login information is wrong!"))
                 }
             );
         }
