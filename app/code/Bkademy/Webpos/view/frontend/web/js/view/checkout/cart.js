@@ -14,6 +14,10 @@ define([
             template: 'Bkademy_Webpos/checkout/cart'
         },
         /**
+         * Show ajax loader
+         */
+        loading: CartModel.loading,
+        /**
          * Current customer name
          */
         currentCustomerName: ko.pureComputed(function() {
@@ -175,8 +179,8 @@ define([
          * Empty cart
          */
         emptyCart: function(){
-            if(CartModel.hasOnlineQuote()){
-                CartModel.removeCartOnline();
+            if(CartModel.hasQuote()){
+                CartModel.removeQuote();
             }else{
                 CartModel.emptyCart();
             }

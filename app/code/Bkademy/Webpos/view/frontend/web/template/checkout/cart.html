@@ -1,4 +1,9 @@
 <div id="webpos_cart" class="col-sm-4 col-right">
+    <!-- ko if: loading() -->
+    <div class="indicator">
+        <div class="spinner"></div>
+    </div>
+    <!-- /ko -->
     <header class="o-header">
         <nav class="o-header-nav">
             <!-- ko if:isOnCheckoutPage() && !createdOrder() -->
