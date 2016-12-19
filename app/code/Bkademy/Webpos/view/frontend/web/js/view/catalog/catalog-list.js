@@ -7,9 +7,12 @@
 define(
     [
         'jquery',
-        'ko'
+        'uiComponent',
+        'ko',
+        'Bkademy_Webpos/js/model/url-builder',
+        'mage/storage'
     ],
-    function ($, ko) {
+    function ($, Component, ko, urlBuilder, storage) {
         "use strict";
 
         ko.bindingHandlers.sliderCategories = {
@@ -100,9 +103,8 @@ define(
                 viewModel.loadingCat(0);
             }
         };
-        return cellGrid.extend({
-            model: category(),
-            productList: null,
+        return Component.extend({
+
             items: ko.observableArray([]),
             className: ko.observable(''),
             loadingCat: ko.observable(''),
@@ -113,10 +115,125 @@ define(
             pageSize: 10,
             curPage: 1,
             defaults: {
-                template: 'Magestore_Webpos/catalog/category/cell-grid',
+                template: 'Bkademy_Webpos/catalog/category/cell-grid',
             },
             initialize: function () {
                 this._super();
+            },
+            _prepareCollection: function () {
+                this.filterAttribute = 'sku';
+                if (this.collection == null) {
+                    this.collection = this.model.getCollection();
+                }
+                this.collection.setOrder('position', 'ASC');
+                this.pageSize = 100;
+                this.collection.setPageSize(this.pageSize);
+                this.collection.setCurPage(this.curPage);
+                if (!this.parentId) {
+                    this.collection.addFieldToFilter('first_category', '1', 'eq');
+                } else {
+                    this.collection.addFieldToFilter('parent_id', this.parentId, 'eq');
+                }
+            },
+            _prepareItems: function () {
+                var deferred = $.Deferred();
+                var self = this;
+                console.log('aaaaaaaaaaaaa');
+                var params = {};
+                var serviceUrl = urlBuilder.createUrl('/webpos/categories?searchCriteria'
+                    , params);
+                var payload = {};
+                storage.get(
+                    serviceUrl, JSON.stringify(payload)
+                ).done(function (response) {
+                    deferred.resolve(response);
+                }).fail(function (response) {
+                });
+
+
+                //this.startLoading();
+                deferred.done(function (data) {
+                    //self.finishLoading();
+                    self.items(data.items);
+                    if (data.total_count == 0) {
+                        //self.className(' no-cat');
+                        if ($('#all-categories') && $('#all-categories').length > 0) {
+                            $('#all-categories').addClass('no-cat');
+                            $('#all-categories').removeClass('in');
+                        }
+                        if ($('.catalog-header') && $('.catalog-header').length > 0) {
+                            $('.catalog-header').addClass('no-cat');
+                        }
+                    } else {
+                        //self.className('');
+                        if ($('#all-categories') && $('#all-categories').length > 0) {
+                            $('#all-categories').removeClass('no-cat');
+                        }
+                        if ($('.catalog-header') && $('.catalog-header').length > 0) {
+                            $('.catalog-header').removeClass('no-cat');
+                        }
+                    }
+                });
+            },
+            clickCat: function (data) {
+                // var viewManager = require('Magestore_Webpos/js/view/layout');
+                var self = this;
+                // self.refresh = true;
+                // self.parentId = parseInt(data.id);
+                //self.collection = null;
+                self._prepareItems();
+                // if (data.path) {
+                //     // viewManager.getSingleton('view/catalog/category/breadcrumbs').getBreadCrumb(data.path);
+                // } else {
+                //     if ($('.category-name')) {
+                //         $('.category-name').hide();
+                //     }
+                // }
+                // /* reload product - start */
+                // if (!self.productList) {
+                //     // self.productList = viewManager.getSingleton('view/catalog/product-list');
+                // }
+                // self.productList.searchCat = parseInt(data.id);
+                // self.productList.refresh = true;
+                // self.productList.collection = null;
+                // self.productList._prepareItems();
+                // $("#search-header-product").val("");
+                /* reload product - end*/
+            },
+            clickCatViewChildren: function (data) {
+                var self = this;
+                self.refresh = true;
+                self.parentId = parseInt(data.id);
+                self.collection = null;
+                self._prepareItems();
+            },
+            clickCatViewProduct: function (data) {
+                // var viewManager = require('Magestore_Webpos/js/view/layout');
+                var self = this;
+                if (data.path) {
+                    //viewManager.getSingleton('view/catalog/category/breadcrumbs').getBreadCrumb(data.path);
+                } else {
+                    if ($('.category-name')) {
+                        $('.category-name').hide();
+                    }
+                }
+                /* reload product - start */
+                if (!self.productList) {
+                    //self.productList = viewManager.getSingleton('view/catalog/product-list');
+                }
+                self.productList.searchCat = parseInt(data.id);
+                if (typeof data.id != 'undefined') {
+                    window.searchCat = data.id;
+                } else {
+                    window.searchCat = '';
+                }
+
+                self.productList.currentPage(1);
+                self.productList.refresh = true;
+                self.productList.collection = null;
+                self.productList._prepareItems();
+                $("#search-header-product").val("");
+                /* reload product - end*/
             }
         });
     }

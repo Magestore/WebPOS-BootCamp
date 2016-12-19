@@ -34,7 +34,7 @@ define([
             if(Items.isEmpty()){
                 alert("Please add item(s) to cart!");
             }else{
-                CartModel.saveCartBeforeCheckout();
+                CartModel.saveQuoteBeforeCheckout();
             }
         }
     });

@@ -20,7 +20,7 @@ define([
         customers: ko.observableArray([]),
         searchKey: ko.observable(''),
         pageSize: 13,
-        numberOfPage: ko.observable(1),
+        numberOfProduct: ko.observable(1),
         curPage: ko.observable(1),
         isLoading: false,
         stopLazyLoad: false,
@@ -50,7 +50,7 @@ define([
                 serviceUrl, JSON.stringify(payload)
             ).done(function (response) {
                 self.addItemsToList(response.items);
-                self.numberOfPage(response.total_count);
+                self.numberOfProduct(response.total_count);
                 self.curPage(pageNumber);
                 if(pageNumber * self.pageSize >= response.total_count) {
                     self.stopLazyLoad = true;
@@ -99,7 +99,7 @@ define([
                 serviceUrl, JSON.stringify(payload)
             ).done(function (response) {
                 self.customers(response.items);
-                self.numberOfPage(response.total_count);
+                self.numberOfProduct(response.total_count);
                 self.curPage(1);
                 //self.hideLoader();
             }).fail(function (response) {

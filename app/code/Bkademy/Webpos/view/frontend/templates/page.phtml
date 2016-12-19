@@ -25,5 +25,18 @@
 
     <?php $config = $block->getWebposConfig(); ?>
     window.webposConfig = <?php /* @escapeNotVerified */ echo \Zend_Json::encode($config); ?>;
+    require([
+        'Bkademy_Webpos/js/model/observer'
+    ], function (observer) {
+        observer.processEvent();
+    });
 </script>
 
+<script>
+    require([
+        'jquery',
+        'Bkademy_Webpos/js/bootstrap/bootstrap',
+        'Bkademy_Webpos/js/bootstrap/bootstrap-switch'
+    ], function($){
+    });
+</script>

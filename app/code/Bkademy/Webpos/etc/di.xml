@@ -68,4 +68,6 @@
         </arguments>
     </type>
 
+    <preference for="Bkademy\Webpos\Api\Checkout\CheckoutRepositoryInterface"
+                type="Bkademy\Webpos\Model\Repository\Checkout\CheckoutRepository"/>
 </config>

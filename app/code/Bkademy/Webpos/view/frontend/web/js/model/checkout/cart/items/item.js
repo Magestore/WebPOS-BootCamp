@@ -74,9 +74,7 @@ define(
                 infobuy.id = self.product_id();
                 infobuy.qty = self.qty();
                 infobuy.use_discount = 1;
-                if(self.custom_price() >= 0){
-                    infobuy.custom_price = self.item_price();
-                }
+                infobuy.custom_price = self.custom_price();
                 return infobuy;
             }
         });
