@@ -9,8 +9,8 @@ class Create extends \Magento\Sales\Model\AdminOrder\Create
      * @return $this
      */
     public function start($quoteId){
-        $quote = $this->quoteFactory->create();
-        $this->quoteRepository->load($quote, $quoteId);
+        $quote = ($quoteId)?$this->quoteRepository->get($quoteId):$this->quoteFactory->create();
+        $this->setQuote($quote);
         return $this;
     }
 
