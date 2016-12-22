@@ -15,8 +15,10 @@ define(
         // 'underscore',
         'mage/translate',
         // 'Bkademy_Webpos/js/view/base/abstract',
-        // 'Bkademy_Webpos/js/model/sales/order/total',
+        'Bkademy_Webpos/js/model/sales/order/total',
         'Bkademy_Webpos/js/model/sales/order/status',
+        'Bkademy_Webpos/js/model/url-builder',
+        'mage/storage'
         // 'Bkademy_Webpos/js/model/checkout/checkout',
         // 'Bkademy_Webpos/js/model/event-manager',
         // 'Bkademy_Webpos/js/action/cart/checkout',
@@ -35,8 +37,10 @@ define(
         // _,
         $t,
         // Component,
-        // orderTotal,
-        orderStatus
+        orderTotal,
+        orderStatus,
+        urlBuilder,
+        storage
         // CheckoutModel,
         // eventmanager,
         // Checkout,
@@ -113,6 +117,22 @@ define(
                 }
             },
 
+            invoice: function (type) {
+                console.log(type);
+                var self = this;
+                var itemsOrder = [];
+                var params = {};
+                var serviceUrl = urlBuilder.createUrl('/webpos/invoices/'+ 1, params);
+                var payload = {};
+                storage.get(
+                    serviceUrl, JSON.stringify(payload)
+                ).done(function (response) {
+                    console.log(response);
+                }).fail(function (response) {
+
+                });
+            },
+
             afterRender: function () {
                 var calheight, heightfooter, heightheader, heighttop, heightsumtotal;
                 heightfooter = $('.footer-order').height();
@@ -124,47 +144,46 @@ define(
             },
             setData: function (data, object) {
                 this.orderData(data);
-                console.log(data);
                 this.orderListView(object);
                 this.isShowActionPopup(false);
                 var self = this;
                 this.totalValues([]);
-                // var totalArray = orderTotal.getTotalOrderView();
-                // if (self.orderData())
-                //     $.each(totalArray, function (index, value) {
-                //         var order_currency_code = self.orderData().order_currency_code;
-                //         var current_currency_code = window.webposConfig.currentCurrencyCode;
-                //         if (
-                //             order_currency_code == current_currency_code
-                //         ) {
-                //             if ((self.orderData()[value.totalName] && self.orderData()[value.totalName] != 0) || value.required) {
-                //                 var totalCode = value.totalName.replace("base_", "");
-                //                 self.totalValues.push(
-                //                     {
-                //                         totalValue: (value.isPrice)?priceHelper.formatPrice(self.orderData()[totalCode]):self.orderData()[totalCode]+' '+value.valueLabel,
-                //                         totalLabel: value.totalName == 'base_discount_amount' &&
-                //                         (self.orderData().discount_description || self.orderData().coupon_code) ?
-                //                         $t(value.totalLabel) + ' (' + (self.orderData().discount_description ?
-                //                             self.orderData().discount_description : self.orderData().coupon_code) +
-                //                         ')' : $t(value.totalLabel)
-                //                     }
-                //                 );
-                //             }
-                //         } else {
-                //             if ((self.orderData()[value.totalName] && self.orderData()[value.totalName] != 0) || value.required) {
-                //                 self.totalValues.push(
-                //                     {
-                //                         totalValue: (value.isPrice)?self.convertAndFormatPrice(self.orderData()[value.totalName]):self.orderData()[value.totalName]+' '+value.valueLabel,
-                //                         totalLabel: value.totalName=='base_discount_amount'&&
-                //                         (self.orderData().discount_description || self.orderData().coupon_code)?
-                //                         $t(value.totalLabel)+' ('+(self.orderData().discount_description?
-                //                             self.orderData().discount_description:self.orderData().coupon_code)+
-                //                         ')':$t(value.totalLabel)
-                //                     }
-                //                 );
-                //             }
-                //         }
-                //     });
+                var totalArray = orderTotal.getTotalOrderView();
+                if (self.orderData())
+                    $.each(totalArray, function (index, value) {
+                        var order_currency_code = self.orderData().order_currency_code;
+                        var current_currency_code = window.webposConfig.currentCurrencyCode;
+                        if (
+                            order_currency_code == current_currency_code
+                        ) {
+                            if ((self.orderData()[value.totalName] && self.orderData()[value.totalName] != 0) || value.required) {
+                                var totalCode = value.totalName.replace("base_", "");
+                                self.totalValues.push(
+                                    {
+                                        totalValue: (value.isPrice)?priceHelper.formatPrice(self.orderData()[totalCode]):self.orderData()[totalCode]+' '+value.valueLabel,
+                                        totalLabel: value.totalName == 'base_discount_amount' &&
+                                        (self.orderData().discount_description || self.orderData().coupon_code) ?
+                                        $t(value.totalLabel) + ' (' + (self.orderData().discount_description ?
+                                            self.orderData().discount_description : self.orderData().coupon_code) +
+                                        ')' : $t(value.totalLabel)
+                                    }
+                                );
+                            }
+                        } else {
+                            if ((self.orderData()[value.totalName] && self.orderData()[value.totalName] != 0) || value.required) {
+                                self.totalValues.push(
+                                    {
+                                        totalValue: (value.isPrice)?self.convertAndFormatPrice(self.orderData()[value.totalName]):self.orderData()[value.totalName]+' '+value.valueLabel,
+                                        totalLabel: value.totalName=='base_discount_amount'&&
+                                        (self.orderData().discount_description || self.orderData().coupon_code)?
+                                        $t(value.totalLabel)+' ('+(self.orderData().discount_description?
+                                            self.orderData().discount_description:self.orderData().coupon_code)+
+                                        ')':$t(value.totalLabel)
+                                    }
+                                );
+                            }
+                        }
+                    });
             },
 
             getData: function(){
@@ -173,26 +192,26 @@ define(
 
             showActionPopup: function (data, event) {
                 event.stopPropagation();
-                if (this.orderViewObject.isShowActionPopup.call())
-                    this.orderViewObject.isShowActionPopup(false);
-                else
+                // if (this.orderViewObject.isShowActionPopup.call())
+                //     this.orderViewObject.isShowActionPopup(false);
+                // else
                     this.orderViewObject.isShowActionPopup(true);
             },
 
             showPopup: function (type) {
                 var viewManager = require('Bkademy_Webpos/js/view/layout');
                 this.isShowActionPopup(false);
-                if (!this.popupArray) {
-                    this.popupArray = {
-                        sendemail: viewManager.getSingleton('view/sales/order/sendemail'),
-                        comment: viewManager.getSingleton('view/sales/order/comment'),
-                        invoice: viewManager.getSingleton('view/sales/order/invoice'),
-                        shipment: viewManager.getSingleton('view/sales/order/shipment'),
-                        refund: viewManager.getSingleton('view/sales/order/creditmemo'),
-                        cancel: viewManager.getSingleton('view/sales/order/cancel'),
-                        payment: viewManager.getSingleton('view/sales/order/view/payment')
-                    }
-                }
+                // if (!this.popupArray) {
+                //     this.popupArray = {
+                //         sendemail: viewManager.getSingleton('view/sales/order/sendemail'),
+                //         comment: viewManager.getSingleton('view/sales/order/comment'),
+                //         invoice: viewManager.getSingleton('view/sales/order/invoice'),
+                //         shipment: viewManager.getSingleton('view/sales/order/shipment'),
+                //         refund: viewManager.getSingleton('view/sales/order/creditmemo'),
+                //         cancel: viewManager.getSingleton('view/sales/order/cancel'),
+                //         payment: viewManager.getSingleton('view/sales/order/view/payment')
+                //     }
+                // }
                 this.popupArray[type].display(true);
             },
 

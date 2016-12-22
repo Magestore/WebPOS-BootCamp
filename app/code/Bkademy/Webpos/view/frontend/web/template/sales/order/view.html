@@ -70,10 +70,9 @@
         <!-- ko if: orderData -->
         <div class="">
             <div class="action-button">
-                <button class="button print btn-cl-cfg-other" data-bind="text: ('Print'), click: printOrder"/>
                 <!-- ko if: showInvoiceButton -->
                 <button class="button invoice btn-cl-cfg-active" data-toggle="modal"
-                        data-bind="text: ('Invoice'), click: showPopup.bind($data, 'invoice')"/>
+                        data-bind="text: ('Invoice'), click: invoice.bind($data, 'invoice')"/>
                 <!--/ko-->
                 <!-- ko if: canSync -->
                 <!--<button class="button invoice btn-cl-cfg-active" data-bind="text: ('Sync'), click: syncOrder"/>-->
