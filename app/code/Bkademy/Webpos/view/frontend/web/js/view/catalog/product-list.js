@@ -68,14 +68,11 @@ define([
             var self = this;
             var params = {};
             var serviceUrl = urlBuilder.createUrl('/webpos/products?searchCriteria[pageSize]=16' +
-                '&filterOr=1' +
                 '&searchCriteria[currentPage]='+curPage +
                 '&searchCriteria[filterGroups][0][filters][0][field]=type_id' +
                 '&searchCriteria[filterGroups][0][filters][0][value]=simple' +
                 '&searchCriteria[filterGroups][0][filters][0][conditionType]=eq' +
-                '&searchCriteria[filterGroups][1][filters][1][field]=name' +
-                '&searchCriteria[filterGroups][1][filters][1][value]=%' + key + '%' +
-                '&searchCriteria[filterGroups][1][filters][1][conditionType]=like'
+                '&searchKey=' + key
                 , params);
             var payload = {};
             $('#product-list-overlay').show();

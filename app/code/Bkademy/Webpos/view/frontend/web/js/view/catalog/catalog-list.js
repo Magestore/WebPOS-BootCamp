@@ -63,6 +63,7 @@ define(
                 ko.unwrap(valueAccessor());
                 var html = '';
                 ko.utils.arrayForEach(valueAccessor().call(), function (item, key) {
+                    console.log(item);
                     html = html + '<div class="item" id="' + key + '">'
                         + '<div class="category-item-view-product img-cat">'
                         + '<a href="#">'
@@ -154,6 +155,7 @@ define(
                 //this.startLoading();
                 deferred.done(function (data) {
                     //self.finishLoading();
+                    console.log('tessssssssssssss');
                     self.items(data.items);
                     if (data.total_count == 0) {
                         //self.className(' no-cat');
