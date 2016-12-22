@@ -72,4 +72,6 @@
                 type="Bkademy\Webpos\Model\Repository\Checkout\CheckoutRepository"/>
     <preference for="Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface"
                 type="Bkademy\Webpos\Model\Checkout\QuoteData"/>
+    <preference for="Bkademy\Webpos\Api\Data\Checkout\ItemBuyRequestInterface"
+                type="Bkademy\Webpos\Model\Checkout\ItemBuyRequest"/>
 </config>

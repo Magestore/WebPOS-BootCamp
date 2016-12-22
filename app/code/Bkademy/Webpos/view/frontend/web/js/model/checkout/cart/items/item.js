@@ -73,7 +73,6 @@ define(
                 infobuy.item_id = self.item_id();
                 infobuy.id = self.product_id();
                 infobuy.qty = self.qty();
-                infobuy.use_discount = 1;
                 infobuy.custom_price = self.custom_price();
                 return infobuy;
             }

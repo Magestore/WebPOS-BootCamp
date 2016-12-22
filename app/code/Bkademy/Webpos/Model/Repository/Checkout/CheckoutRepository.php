@@ -53,15 +53,16 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
 
     /**
      * @param int|null $quoteId
-     * @param array|\Magento\Framework\DataObject $items
+     * @param \Bkademy\Webpos\Api\Data\Checkout\ItemBuyRequestInterface[] $items
      * @param string $customerId
      * @param string[] $section
      * @return \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface
      */
     public function saveCart($quoteId, $items, $customerId, $section){
         $this->_orderCreateModel->start($quoteId);
+        $this->_orderCreateModel->processItems($items);
         $this->_orderCreateModel->finish();
-        return $this->_getQuoteData();
+        return $this->_getQuoteData($section);
     }
 
     /**
@@ -70,6 +71,7 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
      */
     public function removeCart($quoteId){
         $this->_orderCreateModel->start($quoteId);
+        $this->_orderCreateModel->removeQuote();
         $this->_orderCreateModel->finish();
         return $this->_getQuoteData();
     }
@@ -81,7 +83,9 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
      */
     public function removeItem($quoteId, $itemId){
         $this->_orderCreateModel->start($quoteId);
+        $this->_orderCreateModel->removeQuoteItem($itemId);
         $this->_orderCreateModel->finish();
+        return $this->_getQuoteData();
     }
 
     /**
@@ -91,7 +95,9 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
      */
     public function saveShippingMethod($quoteId, $method){
         $this->_orderCreateModel->start($quoteId);
+        $this->_orderCreateModel->setShippingMethod($method);
         $this->_orderCreateModel->finish();
+        return $this->_getQuoteData();
     }
 
     /**
@@ -101,7 +107,9 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
      */
     public function savePaymentMethod($quoteId, $method){
         $this->_orderCreateModel->start($quoteId);
+        $this->_orderCreateModel->setPaymentMethod($method);
         $this->_orderCreateModel->finish();
+        return $this->_getQuoteData();
     }
 
     /**
@@ -112,16 +120,19 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
     public function saveQuoteData($quoteId, $quoteData){
         $this->_orderCreateModel->start($quoteId);
         $this->_orderCreateModel->finish();
+        return $this->_getQuoteData();
     }
 
     /**
      * @param string $quoteId
-     * @param string $customerData
+     * @param string $customerId
      * @return $this
      */
-    public function selectCustomer($quoteId, $customerData){
+    public function selectCustomer($quoteId, $customerId){
         $this->_orderCreateModel->start($quoteId);
+        $this->_orderCreateModel->setCustomer($customerId);
         $this->_orderCreateModel->finish();
+        return $this->_getQuoteData();
     }
 
     /**
@@ -131,8 +142,15 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
      * @return $this
      */
     public function placeOrder($quoteId, $payment, $quoteData){
-        $this->_orderCreateModel->start($quoteId);
-        $this->_orderCreateModel->finish();
+        $this->_orderCreateModel
+            ->start($quoteId)
+            ->setPaymentData($payment)
+            ->setQuoteData($quoteData);
+        $order = $this->_orderCreateModel->createOrder();
+        if(!$order){
+            throw new \Magento\Framework\Exception\LocalizedException(__('Có gì đó sai sai'));
+        }
+        return $order->getData();
     }
 
     /**
