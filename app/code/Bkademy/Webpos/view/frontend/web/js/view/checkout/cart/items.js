@@ -31,7 +31,7 @@ define([
         },
         remove: function(item, event){
             if(item.saved_item()){
-                CartModel.removeItemOnline(item.item_id());
+                CartModel.removeQuoteItem(item.item_id());
             }else{
                 CartModel.removeItem(item.item_id());
             }

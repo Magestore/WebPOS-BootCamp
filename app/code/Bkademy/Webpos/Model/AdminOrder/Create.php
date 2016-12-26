@@ -11,16 +11,29 @@ class Create extends \Magento\Sales\Model\AdminOrder\Create
      * @return $this
      */
     public function start($quoteId){
-        $quote = ($quoteId)?$this->quoteRepository->get($quoteId):$this->quoteFactory->create();
+        $session = $this->getSession();
+        if($quoteId){
+            $quote = $this->quoteRepository->get($quoteId, [$session->getStoreId()]);
+        }else {
+            $quote = $this->quoteFactory->create();
+            $quote->setIsActive(false);
+            $quote->setStoreId($session->getStoreId());
+            $this->quoteRepository->save($quote);
+            $quote->setIgnoreOldQty(true);
+            $quote->setIsSuperMode(true);
+        }
         $this->setQuote($quote);
         return $this;
     }
 
     /**
+     * @param bool $saveQuote
      * @return $this
      */
-    public function finish(){
-        $this->saveQuote();
+    public function finish($saveQuote = true){
+        if($saveQuote){
+            $this->saveQuote();
+        }
         return $this;
     }
 
@@ -29,9 +42,7 @@ class Create extends \Magento\Sales\Model\AdminOrder\Create
      */
     public function saveQuote()
     {
-        if ($this->_needCollect) {
-            $this->getQuote()->collectTotals();
-        }
+        $this->getQuote()->collectTotals();
         $this->quoteRepository->save($this->getQuote());
         return $this;
     }
@@ -106,13 +117,13 @@ class Create extends \Magento\Sales\Model\AdminOrder\Create
     }
 
     /**
-     * @param $customerId
+     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
      * @return $this
      */
-    public function setCustomer($customerId){
-        if(!empty($customerId)){
+    public function assignCustomer($customer){
+        if($customer){
             $this->getQuote()->setCustomerIsGuest(false);
-            $this->getQuote()->setCustomerId($customerId);
+            $this->getQuote()->assignCustomer($customer);
         }else{
             $this->getQuote()->setCustomerIsGuest(true);
         }

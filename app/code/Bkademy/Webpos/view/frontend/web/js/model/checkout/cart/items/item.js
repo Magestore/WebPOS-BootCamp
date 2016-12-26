@@ -24,7 +24,6 @@ define(
                     'unit_price',
                     'custom_price',
                     'image_url',
-                    'is_virtual',
                     'saved_item'
                 ];
             },
@@ -50,7 +49,7 @@ define(
                     self[key](value);
                 }else{
                     $.each(key, function(index, val){
-                        self[key](value);
+                        self[index](val);
                     });
                 }
             },

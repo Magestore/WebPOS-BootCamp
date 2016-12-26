@@ -55,8 +55,8 @@ define(
                 var self = this;
                 self.callRestApi(apiUrl, params, deferred, callBackEvent);
                 deferred.done(function (response) {
-                    if(response.status && response.data){
-                        self.processResponseData(response.data);
+                    if(response){
+                        self.processResponseData(response);
                     }
                 }).fail(function (response) {
                     if(response.responseText){
@@ -81,9 +81,9 @@ define(
             processResponseData: function(data){
                 var self = this;
                 if(data){
-                    if (data.quote) {
+                    if (data.quote_id) {
                         Event.dispatch('init_quote_after', {
-                            data: data.quote
+                            quote_id: data.quote_id
                         });
                     }
                     if(data.payment){

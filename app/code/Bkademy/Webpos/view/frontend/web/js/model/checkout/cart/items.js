@@ -20,7 +20,7 @@ define(
                 self.isEmpty = ko.pureComputed(function(){
                     return (self.items().length > 0)?false:true;
                 });
-                Event.observer('load_items_online_after', function(event, data){
+                Event.observer('load_items_after', function(event, data){
                     if(data && data.items){
                         self.updateItemsFromQuote(data.items);
                     }
@@ -117,8 +117,9 @@ define(
             updateItemsFromQuote: function(quoteItems){
                 if(quoteItems){
                     var self = this;
-                    $.each(quoteItems, function(itemId, itemData){
+                    $.each(quoteItems, function(index, itemData){
                         if(itemData.offline_item_id){
+                            var itemId = itemData.item_id;
                             var unitPrice = (itemData.base_original_price)?itemData.base_original_price:itemData.base_price;
                             var elementItemId = (itemData.offline_item_id == itemId)?itemId:itemData.offline_item_id;
                             var data = {};
@@ -127,7 +128,6 @@ define(
                             data.name = itemData.name;
                             data.qty = parseFloat(itemData.qty);
                             data.image_url = itemData.image_url;
-                            data.is_virtual = itemData.is_virtual;
                             data.saved_item = true;
                             var added = self.getAddedItem({item_id: itemData.offline_item_id}) || self.getAddedItem({item_id: itemId});
                             if(added === false){

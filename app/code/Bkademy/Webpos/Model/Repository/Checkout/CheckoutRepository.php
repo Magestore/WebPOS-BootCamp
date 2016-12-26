@@ -20,35 +20,51 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
     protected $_catalogHelperImage;
 
     /**
-     * @var \Magento\Payment\Model\MethodList
-     */
-    protected $_paymentMethodList;
-
-    /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $_scopeConfig;
+
+    /**
+     * @var \Magento\Customer\Api\CustomerRepositoryInterface
+     */
+    protected $_customerRepository;
+
+    /**
+     * @var \Magento\Quote\Api\ShippingMethodManagementInterface
+     */
+    protected $_shippingMethodManagement;
+
+    /**
+     * @var \Magento\Quote\Api\PaymentMethodManagementInterface
+     */
+    protected $_paymentMethodManagement;
 
     /**
      * CheckoutRepository constructor.
      * @param \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface $quoteDataInterface
      * @param \Bkademy\Webpos\Model\AdminOrder\Create $orderCreateModel
      * @param \Magento\Catalog\Helper\Image $catalogHelperImage
-     * @param \Magento\Payment\Model\MethodList $paymentMethodList
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
+     * @param \Magento\Quote\Api\ShippingMethodManagementInterface $shippingMethodManagement
+     * @param \Magento\Quote\Api\PaymentMethodManagementInterface $paymentMethodManagement
      */
     public function __construct(
         \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface $quoteDataInterface,
         \Bkademy\Webpos\Model\AdminOrder\Create $orderCreateModel,
         \Magento\Catalog\Helper\Image $catalogHelperImage,
-        \Magento\Payment\Model\MethodList $paymentMethodList,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
+        \Magento\Quote\Api\ShippingMethodManagementInterface $shippingMethodManagement,
+        \Magento\Quote\Api\PaymentMethodManagementInterface $paymentMethodManagement
     ) {
         $this->_quoteDataModel = $quoteDataInterface;
         $this->_orderCreateModel = $orderCreateModel;
         $this->_catalogHelperImage = $catalogHelperImage;
-        $this->_paymentMethodList = $paymentMethodList;
         $this->_scopeConfig = $scopeConfig;
+        $this->_customerRepository = $customerRepository;
+        $this->_shippingMethodManagement = $shippingMethodManagement;
+        $this->_paymentMethodManagement = $paymentMethodManagement;
     }
 
     /**
@@ -59,8 +75,10 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
      * @return \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface
      */
     public function saveCart($quoteId, $items, $customerId, $section){
+        $customer = $this->_customerRepository->getById($customerId);
         $this->_orderCreateModel->start($quoteId);
         $this->_orderCreateModel->processItems($items);
+        $this->_orderCreateModel->assignCustomer($customer);
         $this->_orderCreateModel->finish();
         return $this->_getQuoteData($section);
     }
@@ -72,7 +90,7 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
     public function removeCart($quoteId){
         $this->_orderCreateModel->start($quoteId);
         $this->_orderCreateModel->removeQuote();
-        $this->_orderCreateModel->finish();
+        $this->_orderCreateModel->finish(false);
         return $this->_getQuoteData();
     }
 
@@ -188,6 +206,7 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
             foreach ($items as $item){
                 $result[$item->getId()] = $item->getData();
                 $result[$item->getId()]['image_url'] =  $this->_catalogHelperImage->init($item->getProduct(), 'thumbnail')->resize('500')->getUrl();
+                $result[$item->getId()]['offline_item_id'] =  $item->getBuyRequest()->getData('item_id');
             }
         }
         return $result;
@@ -210,36 +229,31 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
      */
     protected function _getShipping(){
         $shippingList = array();
-        $quoteShippingAddress = $this->_orderCreateModel->getQuote()->getShippingAddress();
-        if (is_null($quoteShippingAddress->getId())) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('Shipping address is not set'));
+        $quote = $this->_orderCreateModel->getQuote();
+        $cartId = $quote->getId();
+//        $rates = $this->_shippingMethodManagement->getList($cartId);
+//        if(count($rates) > 0){
+//            foreach ($rates as $rate) {
+//                $methodCode = $rate->getCode();
+//                $methodTitle = $rate->getCarrierTitle().' - '.$rate->getMethodTitle();
+//                $methodPrice = ($rate->getPrice() != null) ? $rate->getPrice() : '0';
+//                $shippingList[] = [
+//                    'code' => $methodCode,
+//                    'title' => $methodTitle,
+//                    'price' => $methodPrice
+//                ];
+//            }
+//        }
+        $shippingAddress = $quote->getShippingAddress();
+        if (!$shippingAddress->getCountryId()) {
+            throw new StateException(__('Shipping address not set.'));
         }
-        try {
-            $quoteShippingAddress->collectShippingRates()->save();
-            $groupedRates = $quoteShippingAddress->getGroupedAllShippingRates();
-            $ratesResult = array();
-            foreach ($groupedRates as $carrierCode => $rates ) {
-                $carrierName = $carrierCode;
-                $carrierTitle = $this->_getStoreConfig('carriers/'.$carrierCode.'/title');
-                if (!is_null($carrierTitle)) {
-                    $carrierName = $carrierTitle;
-                }
-
-                foreach ($rates as $rate) {
-                    $rateItem = $rate->getData();
-                    $rateItem['carrierName'] = $carrierName;
-                    $ratesResult[] = $rateItem;
-                    unset($rateItem);
-                }
-            }
-        } catch (\Magento\Framework\Exception\LocalizedException $e) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('Shipping methods list could not be retrived') . ': ' . $e->getMessage());
-        }
-        if(count($ratesResult) > 0){
-            foreach ($ratesResult as $data) {
-                $methodCode = $data['code'];
-                $methodTitle = $data['carrier_title'].' - '.$data['method_title'];
-                $methodPrice = ($data['price'] != null) ? $data['price'] : '0';
+        $shippingAddress->collectShippingRates()->save();
+        $shippingRates = $shippingAddress->getGroupedAllShippingRates();        foreach ($shippingRates as $carrierRates) {
+            foreach ($carrierRates as $rate) {
+                $methodCode = $rate->getCode();
+                $methodTitle = $rate->getCarrierTitle().' - '.$rate->getMethodTitle();
+                $methodPrice = ($rate->getPrice() != null) ? $rate->getPrice() : '0';
                 $shippingList[] = [
                     'code' => $methodCode,
                     'title' => $methodTitle,
@@ -254,9 +268,9 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
      * @return mixed
      */
     protected function _getPayment(){
-        $quote = $this->_orderCreateModel->getQuote();
         $paymentList = array();
-        $methods =  $this->_paymentMethodList->getAvailableMethods($quote);
+        $quote = $this->_orderCreateModel->getQuote();
+        $methods =  $this->_paymentMethodManagement->getList($quote->getId());
         foreach ($methods as $method) {
             $paymentList[] = array(
                 'code' => $method->getCode(),
