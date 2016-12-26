@@ -47,6 +47,10 @@ class ProductRepository extends \Magento\Catalog\Model\ProductRepository
             $collection->joinAttribute('status', 'catalog_product/status', 'entity_id', null, 'inner');
             $collection->addAttributeToFilter('status', \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED);
             //Add filters from root filter group to the collection
+
+            if ($request->getParam('searchKey')) {
+                $collection->addAttributeToFilter('name', array('like' => '%'.$request->getParam('searchKey').'%')); // Note the spaces
+            }
             foreach ($searchCriteria->getFilterGroups() as $group) {
                 $this->addFilterGroupToCollection($group, $collection);
             }

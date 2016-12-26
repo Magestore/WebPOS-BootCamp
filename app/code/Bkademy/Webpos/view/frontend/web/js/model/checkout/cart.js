@@ -160,27 +160,14 @@ define(
             resetQuoteInitData: function(){
                 var self = this;
                 return {
-                    quote_id: '',
-                    store_id: DataManager.getData(self.KEY.STORE_ID),
-                    customer_id: self.customerId(),
-                    currency_id: DataManager.getData(self.KEY.CURRENCY_ID),
-                    till_id: DataManager.getData(self.KEY.TILL_ID),
-                };
-            },
-            getCustomerInitParams: function(){
-                var self = this;
-                return {
-                    customer_id: DataManager.getData(self.KEY.CUSTOMER_ID),
-                    billing_address: DataManager.getData(self.KEY.BILLING_ADDRESS),
-                    shipping_address: DataManager.getData(self.KEY.SHIPPING_ADDRESS),
-                    data: DataManager.getData(self.KEY.CUSTOMER_DATA)
+                    quote_id: 0
                 };
             },
             getQuoteInitParams: function(){
                 var self = this;
+                var quoteId = DataManager.getData(self.KEY.QUOTE_ID);
                 return {
-                    // quote_id: DataManager.getData(self.KEY.QUOTE_ID)
-                    quote_id: '2'
+                    quote_id: (quoteId)?quoteId:0
                 };
             },
             /**
@@ -191,7 +178,7 @@ define(
                 var self = this;
                 var params = self.getQuoteInitParams();
                 params.items = self.getItemsInfo();
-                params.customer = self.getQuoteCustomerParams();
+                params.customer_id = (self.customerId())?self.customerId():0;
                 params.section = self.KEY.QUOTE_INIT;
                 self.loading(true);
                 var apiRequest = $.Deferred();
@@ -211,7 +198,7 @@ define(
                 var self = this;
                 var params = self.getQuoteInitParams();
                 params.items = self.getItemsInfo();
-                params.customer = self.getQuoteCustomerParams();
+                params.customer_id = (self.customerId())?self.customerId():0;
                 params.section = (saveBeforeRemove == true)?self.KEY.QUOTE_INIT:[];
                 self.loading(true);
                 var apiRequest = $.Deferred();
@@ -278,7 +265,6 @@ define(
              * @returns {boolean}
              */
             hasQuote: function(){
-                return true;
                 var self = this;
                 return (DataManager.getData(self.KEY.QUOTE_ID))?true:false;
             },

@@ -14,9 +14,9 @@ define(
         return resourceAbstract.extend({
             initialize: function () {
                 this._super();
-                this.apiSaveCartUrl = "webpos/cart/save";
-                this.apiRemoveCartUrl = "webpos/cart/removeCart";
-                this.apiRemoveItemUrl = "webpos/cart/removeItem";
+                this.apiSaveCartUrl = "/webpos/cart/save";
+                this.apiRemoveCartUrl = "/webpos/cart/removeCart";
+                this.apiRemoveItemUrl = "/webpos/cart/removeItem";
             },
             getCallBackEvent: function(key){
                 switch(key){

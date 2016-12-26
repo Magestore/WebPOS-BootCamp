@@ -1,62 +1,62 @@
 <?php
 
-namespace Magestore\Webpos\Api\Checkout;
+namespace Bkademy\Webpos\Api\Checkout;
 
 /**
- * Interface CartInterface
- * @package Magestore\Webpos\Api\Checkout
+ * Interface CheckoutRepositoryInterface
+ * @package Bkademy\Webpos\Api\Checkout
  */
 interface CheckoutRepositoryInterface
 {
     /**
-     * @param int|null $quoteId
-     * @param array|\Magento\Framework\DataObject $buyRequests
-     * @param array|\Magento\Framework\DataObject $customerData
-     * @param array|\Magento\Framework\DataObject $updateSections
-     * @return $this
+     * @param string|null $quoteId
+     * @param \Bkademy\Webpos\Api\Data\Checkout\ItemBuyRequestInterface[] $items
+     * @param string $customerId
+     * @param string[] $section
+     * @return \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface
      */
-    public function saveCart($quoteId, $buyRequests, $customerData, $updateSections);
+    public function saveCart($quoteId, $items, $customerId, $section);
 
     /**
      * @param string $quoteId
-     * @return $this
+     * @return \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface
      */
     public function removeCart($quoteId);
 
     /**
      * @param string $quoteId
      * @param string $itemId
-     * @return $this
+     * @return \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface
      */
     public function removeItem($quoteId, $itemId);
 
     /**
      * @param string $quoteId
      * @param string $method
-     * @return $this
+     * @return \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface
      */
     public function saveShippingMethod($quoteId, $method);
 
     /**
      * @param string $quoteId
      * @param string $method
-     * @return $this
+     * @return \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface
      */
     public function savePaymentMethod($quoteId, $method);
 
     /**
      * @param string $quoteId
      * @param string $quoteData
-     * @return $this
+     * @return \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface
      */
     public function saveQuoteData($quoteId, $quoteData);
 
     /**
      * @param string $quoteId
-     * @param string $customerData
-     * @return $this
+     * @param string $customerId
+     * @return \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface
      */
-    public function selectCustomer($quoteId, $customerData);
+    public function selectCustomer($quoteId, $customerId);
 
     /**
      * @param string $quoteId
