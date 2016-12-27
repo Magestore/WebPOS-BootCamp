@@ -1,22 +1,9 @@
 <?php
-
-/**
- *  Copyright © 2016 Bkademy. All rights reserved.
- *  See COPYING.txt for license details.
- *
- */
 namespace Bkademy\Webpos\Model\Repository\Catalog;
 
-use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Framework\Api\SortOrder;
 use Magento\Catalog\Api\Data\ProductExtension;
-use Bkademy\Webpos\Api\Data\Catalog\Product\ConfigOptionsInterface;
-use Bkademy\Webpos\Model\Repository\Catalog\Product\ConfigOptionsBuilder;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @SuppressWarnings(PHPMD.TooManyFields)
- */
 class ProductRepository extends \Magento\Catalog\Model\ProductRepository
     implements \Bkademy\Webpos\Api\Catalog\ProductRepositoryInterface
 {
