@@ -60,7 +60,7 @@ interface CheckoutRepositoryInterface
 
     /**
      * @param string $quoteId
-     * @return $this
+     * @return \Magento\Sales\Api\Data\OrderInterface
      */
     public function placeOrder($quoteId);
 

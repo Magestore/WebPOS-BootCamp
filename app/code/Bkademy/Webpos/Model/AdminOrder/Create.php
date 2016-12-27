@@ -31,7 +31,6 @@ class Create extends \Magento\Sales\Model\AdminOrder\Create
      */
     public function start($quoteId){
         $session = $this->getSession();
-        $session->clearStorage();
         if($quoteId){
             $this->_quote_id = $quoteId;
             $quote = $this->quoteRepository->get($quoteId, [$session->getStore()->getId()]);
@@ -167,6 +166,7 @@ class Create extends \Magento\Sales\Model\AdminOrder\Create
         if($customer){
             $this->getQuote()->setCustomerIsGuest(false);
             $this->getQuote()->assignCustomer($customer);
+            $this->getSession()->setCustomerId($customer->getId());
         }else{
             $this->getQuote()->setCustomerIsGuest(true);
         }

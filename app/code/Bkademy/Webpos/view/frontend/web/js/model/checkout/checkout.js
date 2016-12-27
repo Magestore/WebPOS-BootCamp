@@ -10,9 +10,10 @@ define(
         'ko',
         'Bkademy_Webpos/js/model/checkout/cart',
         'Bkademy_Webpos/js/model/event-manager',
-        'Bkademy_Webpos/js/model/resource/checkout/checkout'
+        'Bkademy_Webpos/js/model/resource/checkout/checkout',
+        'mage/translate'
     ],
-    function ($, ko, CartModel, Event, CheckoutResource) {
+    function ($, ko, CartModel, Event, CheckoutResource, __) {
         "use strict";
         var CheckoutModel = {
             selectedPayments: ko.observableArray(),
@@ -98,12 +99,10 @@ define(
                 self.loading(true);
                 CheckoutResource().placeOrder(params,deferred);
                 deferred.done(function(response){
-                    if(response.status && response.data){
-                        if(response.data.increment_id){
-                            var message = __('Order has been created successfully ') + "#"+response.data.increment_id;
-                            alert(message);
-                        }
-                        self.createOrderResult(response.data);
+                    if(response.increment_id){
+                        var message = __('Order has been created successfully ') + "#"+response.increment_id;
+                        alert(message);
+                        self.createOrderResult(response);
                     }
                 }).always(function(){
                     self.loading(false);

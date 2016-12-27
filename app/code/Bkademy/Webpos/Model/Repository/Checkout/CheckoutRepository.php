@@ -43,6 +43,11 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
     protected $_paymentMethodList;
 
     /**
+     * @var \Magento\Sales\Api\OrderRepositoryInterface
+     */
+    protected $_orderRepository;
+
+    /**
      * CheckoutRepository constructor.
      * @param ResponseInterface $responseModelData
      * @param QuoteDataInterface $quoteModelData
@@ -51,6 +56,7 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
      * @param \Magento\Payment\Model\MethodList $paymentMethodList
+     * @param \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
      */
     public function __construct(
         \Bkademy\Webpos\Api\Data\Checkout\ResponseInterface $responseModelData,
@@ -59,7 +65,8 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
         \Magento\Catalog\Helper\Image $catalogHelperImage,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
-        \Magento\Payment\Model\MethodList $paymentMethodList
+        \Magento\Payment\Model\MethodList $paymentMethodList,
+        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
     ) {
         $this->_responseModelData = $responseModelData;
         $this->_quoteModelData = $quoteModelData;
@@ -68,6 +75,7 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
         $this->_scopeConfig = $scopeConfig;
         $this->_customerRepository = $customerRepository;
         $this->_paymentMethodList = $paymentMethodList;
+        $this->_orderRepository = $orderRepository;
     }
 
     /**
@@ -159,7 +167,7 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
 
     /**
      * @param string $quoteId
-     * @return $this
+     * @return \Magento\Sales\Api\Data\OrderInterface
      */
     public function placeOrder($quoteId){
         $this->_orderCreateModel->start($quoteId);
@@ -167,7 +175,7 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
         if(!$order){
             throw new \Magento\Framework\Exception\LocalizedException(__('Có gì đó sai sai'));
         }
-        return $order->getData();
+        return $this->_orderRepository->get($order->getId());
     }
 
     /**
