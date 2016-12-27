@@ -1,18 +1,10 @@
 <?php
-/**
- *  Copyright © 2016 Bkademy. All rights reserved.
- *  See COPYING.txt for license details.
- *
- */
-
 namespace Bkademy\Webpos\Api\Data\Catalog;
 
 /**
  * @api
  */
 interface ProductInterface
-    //extends ExtensibleDataInterface
-//\Magento\Framework\Api\CustomAttributesDataInterface
 {
     /**#@+
      * Constants defined for keys of  data array
@@ -142,12 +134,6 @@ interface ProductInterface
      */
     public function setExtensionAttributes(\Magento\Catalog\Api\Data\ProductExtensionInterface $extensionAttributes);
 
-     /**
-     * Get list of product options
-     *
-     * @return \Magento\Catalog\Api\Data\ProductCustomOptionInterface[]|null
-     */
-    public function getCustomOptions();
 
     /**
      * Get category ids by product
@@ -169,8 +155,4 @@ interface ProductInterface
      * @return array/null
      */
     public function getImages();
-
-
-
-    
 }

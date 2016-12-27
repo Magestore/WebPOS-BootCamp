@@ -20,11 +20,6 @@ class ProductRepository extends \Magento\Catalog\Model\ProductRepository
                 '\Bkademy\Webpos\Model\ResourceModel\Catalog\Product\Collection'
             );
 
-            /** Integrate webpos **/
-            $eventManage = \Magento\Framework\App\ObjectManager::getInstance()->get(
-                '\Magento\Framework\Event\ManagerInterface'
-            );
-
             $request = \Magento\Framework\App\ObjectManager::getInstance()->get(
                 '\Magento\Framework\App\RequestInterface'
             );
