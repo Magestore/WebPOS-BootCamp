@@ -1,69 +1,67 @@
 <?php
 
-namespace Magestore\Webpos\Api\Checkout;
+namespace Bkademy\Webpos\Api\Checkout;
 
 /**
- * Interface CartInterface
- * @package Magestore\Webpos\Api\Checkout
+ * Interface CheckoutRepositoryInterface
+ * @package Bkademy\Webpos\Api\Checkout
  */
 interface CheckoutRepositoryInterface
 {
     /**
-     * @param int|null $quoteId
-     * @param array|\Magento\Framework\DataObject $buyRequests
-     * @param array|\Magento\Framework\DataObject $customerData
-     * @param array|\Magento\Framework\DataObject $updateSections
-     * @return $this
+     * @param string|null $quoteId
+     * @param \Bkademy\Webpos\Api\Data\Checkout\ItemBuyRequestInterface[] $items
+     * @param string $customerId
+     * @param string[] $section
+     * @return \Bkademy\Webpos\Api\Data\Checkout\ResponseInterface
      */
-    public function saveCart($quoteId, $buyRequests, $customerData, $updateSections);
+    public function saveCart($quoteId, $items, $customerId, $section);
 
     /**
      * @param string $quoteId
-     * @return $this
+     * @return \Bkademy\Webpos\Api\Data\Checkout\ResponseInterface
      */
     public function removeCart($quoteId);
 
     /**
      * @param string $quoteId
      * @param string $itemId
-     * @return $this
+     * @return \Bkademy\Webpos\Api\Data\Checkout\ResponseInterface
      */
     public function removeItem($quoteId, $itemId);
 
     /**
      * @param string $quoteId
-     * @param string $method
-     * @return $this
+     * @param string $shippingMethod
+     * @return \Bkademy\Webpos\Api\Data\Checkout\ResponseInterface
      */
-    public function saveShippingMethod($quoteId, $method);
+    public function saveShippingMethod($quoteId, $shippingMethod);
 
     /**
      * @param string $quoteId
-     * @param string $method
-     * @return $this
+     * @param string $paymentMethod
+     * @return \Bkademy\Webpos\Api\Data\Checkout\ResponseInterface
      */
-    public function savePaymentMethod($quoteId, $method);
+    public function savePaymentMethod($quoteId, $paymentMethod);
 
     /**
      * @param string $quoteId
      * @param string $quoteData
-     * @return $this
+     * @return \Bkademy\Webpos\Api\Data\Checkout\ResponseInterface
      */
     public function saveQuoteData($quoteId, $quoteData);
 
     /**
      * @param string $quoteId
-     * @param string $customerData
-     * @return $this
+     * @param string $customerId
+     * @return \Bkademy\Webpos\Api\Data\Checkout\ResponseInterface
      */
-    public function selectCustomer($quoteId, $customerData);
+    public function selectCustomer($quoteId, $customerId);
 
     /**
      * @param string $quoteId
-     * @param string $payment
-     * @param string $quoteData
-     * @return $this
+     * @return \Magento\Sales\Api\Data\OrderInterface
      */
-    public function placeOrder($quoteId, $payment, $quoteData);
+    public function placeOrder($quoteId);
 
 }

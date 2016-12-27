@@ -17,7 +17,7 @@ define([
             Event.observer('cart_empty_after', function(event, data){
                 self.totals([]);
             });
-            Event.observer('load_totals_online_after', function(event, data){
+            Event.observer('load_totals_after', function(event, data){
                 if(data && data.items){
                     self.updateTotalsFromQuote(data.items);
                 }
