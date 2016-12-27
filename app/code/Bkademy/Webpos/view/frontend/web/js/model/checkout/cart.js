@@ -72,7 +72,7 @@ define(
             },
             removeCustomer: function(){
                 var self = this;
-                self.customerId("");
+                self.customerId(1);
                 Event.dispatch('cart_remove_customer_after','');
             },
             removeItem: function(itemId){
@@ -183,7 +183,7 @@ define(
             removeQuoteItem: function(itemId){
                 var self = this;
                 if(Items.items().length == 1){
-                    return self.removeCartOnline();
+                    return self.removeQuote();
                 }
 
                 var params = self.getQuoteInitParams();

@@ -54,7 +54,7 @@ define([
                 self.emptyCart();
             });
             Event.observer('save_cart_after', function(event, data){
-                if(data && data.response && data.response.items){
+                if(data && data.response && data.response.status){
                     Event.dispatch('go_to_checkout_page', '', true);
                 }
             });

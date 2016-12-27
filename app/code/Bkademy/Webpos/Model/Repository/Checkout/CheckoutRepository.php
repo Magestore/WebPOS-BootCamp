@@ -2,12 +2,20 @@
 
 namespace Bkademy\Webpos\Model\Repository\Checkout;
 
+use Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface as QuoteDataInterface;
+use Bkademy\Webpos\Api\Data\Checkout\ResponseInterface as ResponseInterface;
+
 class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutRepositoryInterface
 {
     /**
-     * @var \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface
+     * @var ResponseInterface
      */
-    protected $_quoteDataModel;
+    protected $_responseModelData;
+
+    /**
+     * @var QuoteDataInterface
+     */
+    protected $_quoteModelData;
 
     /**
      * @var Bkademy\Webpos\Model\AdminOrder\Create
@@ -30,41 +38,36 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
     protected $_customerRepository;
 
     /**
-     * @var \Magento\Quote\Api\ShippingMethodManagementInterface
+     * @var \Magento\Payment\Model\MethodList
      */
-    protected $_shippingMethodManagement;
-
-    /**
-     * @var \Magento\Quote\Api\PaymentMethodManagementInterface
-     */
-    protected $_paymentMethodManagement;
+    protected $_paymentMethodList;
 
     /**
      * CheckoutRepository constructor.
-     * @param \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface $quoteDataInterface
+     * @param ResponseInterface $responseModelData
+     * @param QuoteDataInterface $quoteModelData
      * @param \Bkademy\Webpos\Model\AdminOrder\Create $orderCreateModel
      * @param \Magento\Catalog\Helper\Image $catalogHelperImage
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
-     * @param \Magento\Quote\Api\ShippingMethodManagementInterface $shippingMethodManagement
-     * @param \Magento\Quote\Api\PaymentMethodManagementInterface $paymentMethodManagement
+     * @param \Magento\Payment\Model\MethodList $paymentMethodList
      */
     public function __construct(
-        \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface $quoteDataInterface,
+        \Bkademy\Webpos\Api\Data\Checkout\ResponseInterface $responseModelData,
+        \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface $quoteModelData,
         \Bkademy\Webpos\Model\AdminOrder\Create $orderCreateModel,
         \Magento\Catalog\Helper\Image $catalogHelperImage,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
-        \Magento\Quote\Api\ShippingMethodManagementInterface $shippingMethodManagement,
-        \Magento\Quote\Api\PaymentMethodManagementInterface $paymentMethodManagement
+        \Magento\Payment\Model\MethodList $paymentMethodList
     ) {
-        $this->_quoteDataModel = $quoteDataInterface;
+        $this->_responseModelData = $responseModelData;
+        $this->_quoteModelData = $quoteModelData;
         $this->_orderCreateModel = $orderCreateModel;
         $this->_catalogHelperImage = $catalogHelperImage;
         $this->_scopeConfig = $scopeConfig;
         $this->_customerRepository = $customerRepository;
-        $this->_shippingMethodManagement = $shippingMethodManagement;
-        $this->_paymentMethodManagement = $paymentMethodManagement;
+        $this->_paymentMethodList = $paymentMethodList;
     }
 
     /**
@@ -80,7 +83,7 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
         $this->_orderCreateModel->processItems($items);
         $this->_orderCreateModel->assignCustomer($customer);
         $this->_orderCreateModel->finish();
-        return $this->_getQuoteData($section);
+        return $this->_getResponse(ResponseInterface::STATUS_SUCCESS, [], $section);
     }
 
     /**
@@ -91,7 +94,7 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
         $this->_orderCreateModel->start($quoteId);
         $this->_orderCreateModel->removeQuote();
         $this->_orderCreateModel->finish(false);
-        return $this->_getQuoteData();
+        return $this->_getResponse(ResponseInterface::STATUS_SUCCESS, [], [], true);
     }
 
     /**
@@ -103,31 +106,31 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
         $this->_orderCreateModel->start($quoteId);
         $this->_orderCreateModel->removeQuoteItem($itemId);
         $this->_orderCreateModel->finish();
-        return $this->_getQuoteData();
+        return $this->_getResponse();
     }
 
     /**
      * @param string $quoteId
-     * @param string $method
+     * @param string $shippingMethod
      * @return $this
      */
-    public function saveShippingMethod($quoteId, $method){
+    public function saveShippingMethod($quoteId, $shippingMethod){
         $this->_orderCreateModel->start($quoteId);
-        $this->_orderCreateModel->setShippingMethod($method);
+        $this->_orderCreateModel->setShippingMethod($shippingMethod);
         $this->_orderCreateModel->finish();
-        return $this->_getQuoteData();
+        return $this->_getResponse();
     }
 
     /**
      * @param string $quoteId
-     * @param string $method
+     * @param string $paymentMethod
      * @return $this
      */
-    public function savePaymentMethod($quoteId, $method){
+    public function savePaymentMethod($quoteId, $paymentMethod){
         $this->_orderCreateModel->start($quoteId);
-        $this->_orderCreateModel->setPaymentMethod($method);
+        $this->_orderCreateModel->setPaymentMethod($paymentMethod);
         $this->_orderCreateModel->finish();
-        return $this->_getQuoteData();
+        return $this->_getResponse();
     }
 
     /**
@@ -138,7 +141,7 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
     public function saveQuoteData($quoteId, $quoteData){
         $this->_orderCreateModel->start($quoteId);
         $this->_orderCreateModel->finish();
-        return $this->_getQuoteData();
+        return $this->_getResponse();
     }
 
     /**
@@ -147,23 +150,19 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
      * @return $this
      */
     public function selectCustomer($quoteId, $customerId){
+        $customer = $this->_customerRepository->getById($customerId);
         $this->_orderCreateModel->start($quoteId);
-        $this->_orderCreateModel->setCustomer($customerId);
+        $this->_orderCreateModel->assignCustomer($customer);
         $this->_orderCreateModel->finish();
-        return $this->_getQuoteData();
+        return $this->_getResponse();
     }
 
     /**
      * @param string $quoteId
-     * @param string $payment
-     * @param string $quoteData
      * @return $this
      */
-    public function placeOrder($quoteId, $payment, $quoteData){
-        $this->_orderCreateModel
-            ->start($quoteId)
-            ->setPaymentData($payment)
-            ->setQuoteData($quoteData);
+    public function placeOrder($quoteId){
+        $this->_orderCreateModel->start($quoteId);
         $order = $this->_orderCreateModel->createOrder();
         if(!$order){
             throw new \Magento\Framework\Exception\LocalizedException(__('Có gì đó sai sai'));
@@ -172,28 +171,52 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
     }
 
     /**
+     * @param int $status
+     * @param array $messages
+     * @param array $sections
+     * @param bool $emptyQuote
+     * @return mixed
+     */
+    protected function _getResponse($status = ResponseInterface::STATUS_SUCCESS, $messages = [], $sections = [], $emptyQuote = false){
+        $data = array(
+            ResponseInterface::KEY_STATUS => $status,
+            ResponseInterface::KEY_MESSAGES => $messages,
+            ResponseInterface::KEY_QUOTE_DATA => $this->_getQuoteData($sections, $emptyQuote)
+        );
+        return $this->_responseModelData->setData($data);
+    }
+    
+    /**
      * @param $sections
      * @param $model
      * @return array
      */
-    protected function _getQuoteData($sections = array()){
-        $data = array();
-        if(empty($sections) || $sections == 'quote_id' || (is_array($sections) && in_array('quote_id', $sections))){
-            $data['quote_id'] = $this->_orderCreateModel->getQuote()->getId();
+    protected function _getQuoteData($sections = array(), $empty = false){
+        $data = array(
+            QuoteDataInterface::KEY_QUOTE_ID  => '',
+            QuoteDataInterface::KEY_ITEMS  => '',
+            QuoteDataInterface::KEY_TOTALS  => '',
+            QuoteDataInterface::KEY_SHIPPING  => '',
+            QuoteDataInterface::KEY_PAYMENT  => ''
+        );
+        if($empty == false){
+            if(empty($sections) || $sections == QuoteDataInterface::KEY_QUOTE_ID || (is_array($sections) && in_array(QuoteDataInterface::KEY_QUOTE_ID, $sections))){
+                $data[QuoteDataInterface::KEY_QUOTE_ID] = $this->_orderCreateModel->getQuote()->getId();
+            }
+            if(empty($sections) || $sections == QuoteDataInterface::KEY_ITEMS || (is_array($sections) && in_array(QuoteDataInterface::KEY_ITEMS, $sections))){
+                $data[QuoteDataInterface::KEY_ITEMS] = $this->_getQuoteItems();
+            }
+            if(empty($sections) || $sections == QuoteDataInterface::KEY_TOTALS || (is_array($sections) && in_array(QuoteDataInterface::KEY_TOTALS, $sections))){
+                $data[QuoteDataInterface::KEY_TOTALS] = $this->_getTotals();
+            }
+            if(empty($sections) || $sections == QuoteDataInterface::KEY_SHIPPING || (is_array($sections) && in_array(QuoteDataInterface::KEY_SHIPPING, $sections))){
+                $data[QuoteDataInterface::KEY_SHIPPING] = $this->_getShipping();
+            }
+            if(empty($sections) || $sections == QuoteDataInterface::KEY_PAYMENT || (is_array($sections) && in_array(QuoteDataInterface::KEY_PAYMENT, $sections))){
+                $data[QuoteDataInterface::KEY_PAYMENT] = $this->_getPayment();
+            }
         }
-        if(empty($sections) || $sections == 'items' || (is_array($sections) && in_array('items', $sections))){
-            $data['items'] = $this->_getQuoteItems();
-        }
-        if(empty($sections) || $sections == 'totals' || (is_array($sections) && in_array('totals', $sections))){
-            $data['totals'] = $this->_getTotals();
-        }
-        if(empty($sections) || $sections == 'shipping' || (is_array($sections) && in_array('shipping', $sections))){
-            $data['shipping'] = $this->_getShipping();
-        }
-        if(empty($sections) || $sections == 'payment' || (is_array($sections) && in_array('payment', $sections))){
-            $data['payment'] = $this->_getPayment();
-        }
-        return $this->_quoteDataModel->setData($data);
+        return $this->_quoteModelData->setData($data);
     }
 
     /**
@@ -205,7 +228,6 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
         if(count($items)){
             foreach ($items as $item){
                 $result[$item->getId()] = $item->getData();
-                $result[$item->getId()]['image_url'] =  $this->_catalogHelperImage->init($item->getProduct(), 'thumbnail')->resize('500')->getUrl();
                 $result[$item->getId()]['offline_item_id'] =  $item->getBuyRequest()->getData('item_id');
             }
         }
@@ -230,26 +252,13 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
     protected function _getShipping(){
         $shippingList = array();
         $quote = $this->_orderCreateModel->getQuote();
-        $cartId = $quote->getId();
-//        $rates = $this->_shippingMethodManagement->getList($cartId);
-//        if(count($rates) > 0){
-//            foreach ($rates as $rate) {
-//                $methodCode = $rate->getCode();
-//                $methodTitle = $rate->getCarrierTitle().' - '.$rate->getMethodTitle();
-//                $methodPrice = ($rate->getPrice() != null) ? $rate->getPrice() : '0';
-//                $shippingList[] = [
-//                    'code' => $methodCode,
-//                    'title' => $methodTitle,
-//                    'price' => $methodPrice
-//                ];
-//            }
-//        }
         $shippingAddress = $quote->getShippingAddress();
         if (!$shippingAddress->getCountryId()) {
-            throw new StateException(__('Shipping address not set.'));
+            throw new  \Magento\Framework\Exception\LocalizedException(__('Shipping address not set.'));
         }
         $shippingAddress->collectShippingRates()->save();
-        $shippingRates = $shippingAddress->getGroupedAllShippingRates();        foreach ($shippingRates as $carrierRates) {
+        $shippingRates = $shippingAddress->getGroupedAllShippingRates();
+        foreach ($shippingRates as $carrierRates) {
             foreach ($carrierRates as $rate) {
                 $methodCode = $rate->getCode();
                 $methodTitle = $rate->getCarrierTitle().' - '.$rate->getMethodTitle();
@@ -270,7 +279,7 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
     protected function _getPayment(){
         $paymentList = array();
         $quote = $this->_orderCreateModel->getQuote();
-        $methods =  $this->_paymentMethodManagement->getList($quote->getId());
+        $methods =  $this->_paymentMethodList->getAvailableMethods($quote);
         foreach ($methods as $method) {
             $paymentList[] = array(
                 'code' => $method->getCode(),

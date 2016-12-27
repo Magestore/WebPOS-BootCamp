@@ -127,7 +127,6 @@ define(
                             data.unit_price = parseFloat(unitPrice);
                             data.name = itemData.name;
                             data.qty = parseFloat(itemData.qty);
-                            data.image_url = itemData.image_url;
                             data.saved_item = true;
                             var added = self.getAddedItem({item_id: itemData.offline_item_id}) || self.getAddedItem({item_id: itemId});
                             if(added === false){

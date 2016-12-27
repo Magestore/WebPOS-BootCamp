@@ -57,7 +57,7 @@ define(
             saveShipping: function(data){
                 var self = this;
                 if(data.code){
-                    self.saveShippingMethodOnline(data.code);
+                    self.saveShippingMethod(data.code);
                 }
             },
             saveShippingMethod: function(code){
@@ -95,7 +95,6 @@ define(
                 var self = this;
                 var deferred = $.Deferred();
                 var params = CartModel.getQuoteInitParams();
-                params.payment_method = self.paymentCode();
                 self.loading(true);
                 CheckoutResource().placeOrder(params,deferred);
                 deferred.done(function(response){
