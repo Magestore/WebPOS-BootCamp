@@ -155,4 +155,12 @@ interface ProductInterface
      * @return array/null
      */
     public function getImages();
+
+
+    /**
+     * Get stock data by product
+     *
+     * @return array/null
+     */
+    public function getStock();
 }

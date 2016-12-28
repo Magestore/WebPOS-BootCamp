@@ -111,7 +111,7 @@ define([
 
         showPopupDetails: function (item,event) {
             detailPopup.itemData(item);
-            $("#popup-product-detail").show();
+                $("#popup-product-detail").show();
             $("#popup-product-detail").removeClass("fade");
             $(".wrap-backover").show();
 

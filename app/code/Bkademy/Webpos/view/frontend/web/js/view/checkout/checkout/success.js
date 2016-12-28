@@ -10,7 +10,7 @@ define(
         'ko',
         'uiComponent',
         'Bkademy_Webpos/js/model/checkout/checkout',
-        'Bkademy_Webpos/js/model/event-Manager'
+        'Bkademy_Webpos/js/model/event-manager'
     ],
     function ($, ko, Component, CheckoutModel, Event) {
         "use strict";
