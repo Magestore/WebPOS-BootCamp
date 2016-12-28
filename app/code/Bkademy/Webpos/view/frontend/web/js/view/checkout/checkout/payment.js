@@ -27,7 +27,7 @@ define(
                 var self = this;
             },
             setPaymentMethod: function (data) {
-                PaymentModel.addPayment(data);
+                PaymentModel.setPaymentMethod(data);
             }
         });
     }

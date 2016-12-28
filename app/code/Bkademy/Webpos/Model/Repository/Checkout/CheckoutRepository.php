@@ -2,8 +2,21 @@
 
 namespace Bkademy\Webpos\Model\Repository\Checkout;
 
+use Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface as QuoteDataInterface;
+use Bkademy\Webpos\Api\Data\Checkout\ResponseInterface as ResponseInterface;
+
 class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutRepositoryInterface
 {
+    /**
+     * @var ResponseInterface
+     */
+    protected $_responseModelData;
+
+    /**
+     * @var QuoteDataInterface
+     */
+    protected $_quoteModelData;
+
     /**
      * @var Bkademy\Webpos\Model\AdminOrder\Create
      */
@@ -15,54 +28,81 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
     protected $_catalogHelperImage;
 
     /**
-     * @var \Magento\Payment\Model\MethodList
-     */
-    protected $_paymentMethodList;
-
-    /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $_scopeConfig;
 
     /**
+     * @var \Magento\Customer\Api\CustomerRepositoryInterface
+     */
+    protected $_customerRepository;
+
+    /**
+     * @var \Magento\Payment\Model\MethodList
+     */
+    protected $_paymentMethodList;
+
+    /**
+     * @var \Magento\Sales\Api\OrderRepositoryInterface
+     */
+    protected $_orderRepository;
+
+    /**
      * CheckoutRepository constructor.
+     * @param ResponseInterface $responseModelData
+     * @param QuoteDataInterface $quoteModelData
      * @param \Bkademy\Webpos\Model\AdminOrder\Create $orderCreateModel
      * @param \Magento\Catalog\Helper\Image $catalogHelperImage
-     * @param \Magento\Payment\Model\MethodList $paymentMethodList
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
+     * @param \Magento\Payment\Model\MethodList $paymentMethodList
+     * @param \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
      */
     public function __construct(
+        \Bkademy\Webpos\Api\Data\Checkout\ResponseInterface $responseModelData,
+        \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface $quoteModelData,
         \Bkademy\Webpos\Model\AdminOrder\Create $orderCreateModel,
         \Magento\Catalog\Helper\Image $catalogHelperImage,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
         \Magento\Payment\Model\MethodList $paymentMethodList,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
     ) {
+        $this->_responseModelData = $responseModelData;
+        $this->_quoteModelData = $quoteModelData;
         $this->_orderCreateModel = $orderCreateModel;
         $this->_catalogHelperImage = $catalogHelperImage;
-        $this->_paymentMethodList = $paymentMethodList;
         $this->_scopeConfig = $scopeConfig;
+        $this->_customerRepository = $customerRepository;
+        $this->_paymentMethodList = $paymentMethodList;
+        $this->_orderRepository = $orderRepository;
     }
 
     /**
      * @param int|null $quoteId
-     * @param array|\Magento\Framework\DataObject $buyRequests
-     * @param array|\Magento\Framework\DataObject $customerData
-     * @param array|\Magento\Framework\DataObject $updateSections
-     * @return $this
+     * @param \Bkademy\Webpos\Api\Data\Checkout\ItemBuyRequestInterface[] $items
+     * @param string $customerId
+     * @param string[] $section
+     * @return \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface
      */
-    public function saveCart($quoteId, $buyRequests, $customerData, $updateSections){
+    public function saveCart($quoteId, $items, $customerId, $section){
+        $customer = $this->_customerRepository->getById($customerId);
         $this->_orderCreateModel->start($quoteId);
+        $this->_orderCreateModel->processItems($items);
+        $this->_orderCreateModel->assignCustomer($customer);
         $this->_orderCreateModel->finish();
+        return $this->_getResponse(ResponseInterface::STATUS_SUCCESS, [], $section);
     }
 
     /**
      * @param string $quoteId
-     * @return $this
+     * @return \Bkademy\Webpos\Api\Data\Checkout\QuoteDataInterface
      */
     public function removeCart($quoteId){
         $this->_orderCreateModel->start($quoteId);
-        $this->_orderCreateModel->finish();
-        return $this->_getQuoteData();
+        $this->_orderCreateModel->removeQuote();
+        $this->_orderCreateModel->finish(false);
+        return $this->_getResponse(ResponseInterface::STATUS_SUCCESS, [], [], true);
     }
 
     /**
@@ -72,27 +112,33 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
      */
     public function removeItem($quoteId, $itemId){
         $this->_orderCreateModel->start($quoteId);
+        $this->_orderCreateModel->removeQuoteItem($itemId);
         $this->_orderCreateModel->finish();
+        return $this->_getResponse();
     }
 
     /**
      * @param string $quoteId
-     * @param string $method
+     * @param string $shippingMethod
      * @return $this
      */
-    public function saveShippingMethod($quoteId, $method){
+    public function saveShippingMethod($quoteId, $shippingMethod){
         $this->_orderCreateModel->start($quoteId);
+        $this->_orderCreateModel->setShippingMethod($shippingMethod);
         $this->_orderCreateModel->finish();
+        return $this->_getResponse();
     }
 
     /**
      * @param string $quoteId
-     * @param string $method
+     * @param string $paymentMethod
      * @return $this
      */
-    public function savePaymentMethod($quoteId, $method){
+    public function savePaymentMethod($quoteId, $paymentMethod){
         $this->_orderCreateModel->start($quoteId);
+        $this->_orderCreateModel->setPaymentMethod($paymentMethod);
         $this->_orderCreateModel->finish();
+        return $this->_getResponse();
     }
 
     /**
@@ -103,52 +149,82 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
     public function saveQuoteData($quoteId, $quoteData){
         $this->_orderCreateModel->start($quoteId);
         $this->_orderCreateModel->finish();
+        return $this->_getResponse();
     }
 
     /**
      * @param string $quoteId
-     * @param string $customerData
+     * @param string $customerId
      * @return $this
      */
-    public function selectCustomer($quoteId, $customerData){
+    public function selectCustomer($quoteId, $customerId){
+        $customer = $this->_customerRepository->getById($customerId);
         $this->_orderCreateModel->start($quoteId);
+        $this->_orderCreateModel->assignCustomer($customer);
         $this->_orderCreateModel->finish();
+        return $this->_getResponse();
     }
 
     /**
      * @param string $quoteId
-     * @param string $payment
-     * @param string $quoteData
-     * @return $this
+     * @return \Magento\Sales\Api\Data\OrderInterface
      */
-    public function placeOrder($quoteId, $payment, $quoteData){
+    public function placeOrder($quoteId){
         $this->_orderCreateModel->start($quoteId);
-        $this->_orderCreateModel->finish();
+        $order = $this->_orderCreateModel->createOrder();
+        if(!$order){
+            throw new \Magento\Framework\Exception\LocalizedException(__('Có gì đó sai sai'));
+        }
+        return $this->_orderRepository->get($order->getId());
     }
 
+    /**
+     * @param int $status
+     * @param array $messages
+     * @param array $sections
+     * @param bool $emptyQuote
+     * @return mixed
+     */
+    protected function _getResponse($status = ResponseInterface::STATUS_SUCCESS, $messages = [], $sections = [], $emptyQuote = false){
+        $data = array(
+            ResponseInterface::KEY_STATUS => $status,
+            ResponseInterface::KEY_MESSAGES => $messages,
+            ResponseInterface::KEY_QUOTE_DATA => $this->_getQuoteData($sections, $emptyQuote)
+        );
+        return $this->_responseModelData->setData($data);
+    }
+    
     /**
      * @param $sections
      * @param $model
      * @return array
      */
-    protected function _getQuoteData($sections){
-        $data = array();
-        if(empty($sections) || $sections == 'quote_id' || (is_array($sections) && in_array('quote_id', $sections))){
-            $data['quote_id'] = $this->_orderCreateModel->getQuote()->getId();
+    protected function _getQuoteData($sections = array(), $empty = false){
+        $data = array(
+            QuoteDataInterface::KEY_QUOTE_ID  => '',
+            QuoteDataInterface::KEY_ITEMS  => '',
+            QuoteDataInterface::KEY_TOTALS  => '',
+            QuoteDataInterface::KEY_SHIPPING  => '',
+            QuoteDataInterface::KEY_PAYMENT  => ''
+        );
+        if($empty == false){
+            if(empty($sections) || $sections == QuoteDataInterface::KEY_QUOTE_ID || (is_array($sections) && in_array(QuoteDataInterface::KEY_QUOTE_ID, $sections))){
+                $data[QuoteDataInterface::KEY_QUOTE_ID] = $this->_orderCreateModel->getQuote()->getId();
+            }
+            if(empty($sections) || $sections == QuoteDataInterface::KEY_ITEMS || (is_array($sections) && in_array(QuoteDataInterface::KEY_ITEMS, $sections))){
+                $data[QuoteDataInterface::KEY_ITEMS] = $this->_getQuoteItems();
+            }
+            if(empty($sections) || $sections == QuoteDataInterface::KEY_TOTALS || (is_array($sections) && in_array(QuoteDataInterface::KEY_TOTALS, $sections))){
+                $data[QuoteDataInterface::KEY_TOTALS] = $this->_getTotals();
+            }
+            if(empty($sections) || $sections == QuoteDataInterface::KEY_SHIPPING || (is_array($sections) && in_array(QuoteDataInterface::KEY_SHIPPING, $sections))){
+                $data[QuoteDataInterface::KEY_SHIPPING] = $this->_getShipping();
+            }
+            if(empty($sections) || $sections == QuoteDataInterface::KEY_PAYMENT || (is_array($sections) && in_array(QuoteDataInterface::KEY_PAYMENT, $sections))){
+                $data[QuoteDataInterface::KEY_PAYMENT] = $this->_getPayment();
+            }
         }
-        if(empty($sections) || $sections == 'items' || (is_array($sections) && in_array('items', $sections))){
-            $data['items'] = $this->_getQuoteItems();
-        }
-        if(empty($sections) || $sections == 'totals' || (is_array($sections) && in_array('totals', $sections))){
-            $data['totals'] = $this->_getTotals();
-        }
-        if(empty($sections) || $sections == 'shipping' || (is_array($sections) && in_array('shipping', $sections))){
-            $data['shipping'] = $this->_getShipping();
-        }
-        if(empty($sections) || $sections == 'payment' || (is_array($sections) && in_array('payment', $sections))){
-            $data['payment'] = $this->_getPayment();
-        }
-        return $data;
+        return $this->_quoteModelData->setData($data);
     }
 
     /**
@@ -160,7 +236,7 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
         if(count($items)){
             foreach ($items as $item){
                 $result[$item->getId()] = $item->getData();
-                $result[$item->getId()]['image_url'] =  $this->_catalogHelperImage->init($item->getProduct(), 'thumbnail')->resize('500')->getUrl();
+                $result[$item->getId()]['offline_item_id'] =  $item->getBuyRequest()->getData('item_id');
             }
         }
         return $result;
@@ -183,36 +259,18 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
      */
     protected function _getShipping(){
         $shippingList = array();
-        $quoteShippingAddress = $this->_orderCreateModel->getQuote()->getShippingAddress();
-        if (is_null($quoteShippingAddress->getId())) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('Shipping address is not set'));
+        $quote = $this->_orderCreateModel->getQuote();
+        $shippingAddress = $quote->getShippingAddress();
+        if (!$shippingAddress->getCountryId()) {
+            throw new  \Magento\Framework\Exception\LocalizedException(__('Shipping address not set.'));
         }
-        try {
-            $quoteShippingAddress->collectShippingRates()->save();
-            $groupedRates = $quoteShippingAddress->getGroupedAllShippingRates();
-            $ratesResult = array();
-            foreach ($groupedRates as $carrierCode => $rates ) {
-                $carrierName = $carrierCode;
-                $carrierTitle = $this->_getStoreConfig('carriers/'.$carrierCode.'/title');
-                if (!is_null($carrierTitle)) {
-                    $carrierName = $carrierTitle;
-                }
-
-                foreach ($rates as $rate) {
-                    $rateItem = $rate->getData();
-                    $rateItem['carrierName'] = $carrierName;
-                    $ratesResult[] = $rateItem;
-                    unset($rateItem);
-                }
-            }
-        } catch (\Magento\Framework\Exception\LocalizedException $e) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('Shipping methods list could not be retrived') . ': ' . $e->getMessage());
-        }
-        if(count($ratesResult) > 0){
-            foreach ($ratesResult as $data) {
-                $methodCode = $data['code'];
-                $methodTitle = $data['carrier_title'].' - '.$data['method_title'];
-                $methodPrice = ($data['price'] != null) ? $data['price'] : '0';
+        $shippingAddress->collectShippingRates()->save();
+        $shippingRates = $shippingAddress->getGroupedAllShippingRates();
+        foreach ($shippingRates as $carrierRates) {
+            foreach ($carrierRates as $rate) {
+                $methodCode = $rate->getCode();
+                $methodTitle = $rate->getCarrierTitle().' - '.$rate->getMethodTitle();
+                $methodPrice = ($rate->getPrice() != null) ? $rate->getPrice() : '0';
                 $shippingList[] = [
                     'code' => $methodCode,
                     'title' => $methodTitle,
@@ -227,8 +285,8 @@ class CheckoutRepository implements \Bkademy\Webpos\Api\Checkout\CheckoutReposit
      * @return mixed
      */
     protected function _getPayment(){
-        $quote = $this->_orderCreateModel->getQuote();
         $paymentList = array();
+        $quote = $this->_orderCreateModel->getQuote();
         $methods =  $this->_paymentMethodList->getAvailableMethods($quote);
         foreach ($methods as $method) {
             $paymentList[] = array(

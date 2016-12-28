@@ -24,7 +24,6 @@ define(
                     'unit_price',
                     'custom_price',
                     'image_url',
-                    'is_virtual',
                     'saved_item'
                 ];
             },
@@ -50,7 +49,7 @@ define(
                     self[key](value);
                 }else{
                     $.each(key, function(index, val){
-                        self[key](value);
+                        self[index](val);
                     });
                 }
             },
@@ -73,7 +72,6 @@ define(
                 infobuy.item_id = self.item_id();
                 infobuy.id = self.product_id();
                 infobuy.qty = self.qty();
-                infobuy.use_discount = 1;
                 infobuy.custom_price = self.custom_price();
                 return infobuy;
             }

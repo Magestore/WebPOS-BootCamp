@@ -14,9 +14,9 @@ define(
         return resourceAbstract.extend({
             initialize: function () {
                 this._super();
-                this.apiSaveCartUrl = "webpos/cart/save";
-                this.apiRemoveCartUrl = "webpos/cart/removeCart";
-                this.apiRemoveItemUrl = "webpos/cart/removeItem";
+                this.apiSaveCartUrl = "/webpos/cart/save";
+                this.apiRemoveCartUrl = "/webpos/cart/removeCart";
+                this.apiRemoveItemUrl = "/webpos/cart/removeItem";
             },
             getCallBackEvent: function(key){
                 switch(key){
@@ -32,10 +32,6 @@ define(
                 var apiUrl = this.apiSaveCartUrl;
                 var callBackEvent = this.getCallBackEvent("saveCart");
                 this.callApi(apiUrl, params, deferred, callBackEvent);
-            },
-            saveQuote: function(params,deferred){
-                var apiUrl = this.apiSaveCartUrl;
-                this.callApi(apiUrl, params, deferred);
             },
             removeQuote: function(params,deferred){
                 var apiUrl = this.apiRemoveCartUrl;
