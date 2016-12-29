@@ -13,9 +13,6 @@
         <script src="requirejs/require.js"/>
         <css src="Bkademy_Webpos::/css/style.css"/>
         <css src="Bkademy_Webpos::css/bootstrap/bootstrap.css"/>
-        <css src="Bkademy_Webpos::css/bootstrap/bootstrap-theme.css"/>
-        <css src="Bkademy_Webpos::css/bootstrap/bootstrap-switch.css"/>
-        <css src="Bkademy_Webpos::css/bootstrap/bootstrap-slider.min.css"/>
         <css src="Bkademy_Webpos::css/general.css"/>
         <css src="Bkademy_Webpos::css/webpos.css"/>
         <css src="Bkademy_Webpos::css/responsive.css"/>
