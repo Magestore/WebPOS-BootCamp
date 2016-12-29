@@ -11,7 +11,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Webpos</title>
         <script src="requirejs/require.js"/>
-        <css src="Bkademy_Webpos::/css/style.css"/>
+        <css src="Bkademy_Webpos::css/style.css"/>
         <css src="Bkademy_Webpos::css/bootstrap/bootstrap.css"/>
         <css src="Bkademy_Webpos::css/general.css"/>
         <css src="Bkademy_Webpos::css/webpos.css"/>
