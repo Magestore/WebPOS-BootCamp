@@ -18,7 +18,8 @@ define(
         'Bkademy_Webpos/js/model/sales/order/total',
         'Bkademy_Webpos/js/model/sales/order/status',
         'Bkademy_Webpos/js/model/url-builder',
-        'mage/storage'
+        'mage/storage',
+        'Bkademy_Webpos/js/helper/alert'
         // 'Bkademy_Webpos/js/model/checkout/checkout',
         // 'Bkademy_Webpos/js/model/event-manager',
         // 'Bkademy_Webpos/js/action/cart/checkout',
@@ -40,7 +41,8 @@ define(
         orderTotal,
         orderStatus,
         urlBuilder,
-        storage
+        storage,
+        alertHelper
         // CheckoutModel,
         // eventmanager,
         // Checkout,
@@ -118,13 +120,62 @@ define(
             },
 
             invoice: function (type) {
-                console.log(type);
+                var orderId = this.orderData().entity_id;
                 var self = this;
                 var itemsOrder = [];
                 var params = {};
-                var serviceUrl = urlBuilder.createUrl('/webpos/invoices/'+ 1, params);
+                var serviceUrl = urlBuilder.createUrl('/order/'+ orderId + '/invoice', params);
                 var payload = {};
-                storage.get(
+                storage.post(
+                    serviceUrl, JSON.stringify(payload)
+                ).done(function (response) {
+                    alertHelper({
+                        priority: 'success',
+                        title: 'sucess',
+                        message: $t('Create invoice successfully!')
+                    });
+                    console.log(response);
+                }).fail(function (response) {
+                    alertHelper({
+                        priority: 'warning',
+                        title: 'Error',
+                        message: $t('Cannot create invoice!')
+                    });
+                });
+            },
+
+            shipment: function (type) {
+                var self = this;
+                var orderId = this.orderData().entity_id;
+                var itemsOrder = [];
+                var params = {};
+                var serviceUrl =  urlBuilder.createUrl('/order/'+ orderId + '/ship', params);
+                var payload = {};
+                storage.post(
+                    serviceUrl, JSON.stringify(payload)
+                ).done(function (response) {
+                    alertHelper({
+                        priority: 'success',
+                        title: 'sucess',
+                        message: $t('Create shipment successfully!')
+                    });
+                }).fail(function (response) {
+                    alertHelper({
+                        priority: 'warning',
+                        title: 'Error',
+                        message: $t('Cannot create shipment!')
+                    });
+                });
+            },
+
+            refund: function (type) {
+                var self = this;
+                var itemsOrder = [];
+                var orderId = this.orderData().entity_id;
+                var params = {};
+                var serviceUrl = urlBuilder.createUrl('/order/'+ orderId + '/refund', params);
+                var payload = {};
+                storage.post(
                     serviceUrl, JSON.stringify(payload)
                 ).done(function (response) {
                     console.log(response);
