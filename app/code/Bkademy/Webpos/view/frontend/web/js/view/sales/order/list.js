@@ -9,8 +9,9 @@ define([
     'ko',
     'Bkademy_Webpos/js/model/url-builder',
     'Bkademy_Webpos/js/model/sales/order/status',
-    'Bkademy_Webpos/js/view/sales/order/view'
-], function ($, Component, storage, ko, urlBuilder, orderStatus, OrderView) {
+    'Bkademy_Webpos/js/view/sales/order/view',
+    'Magento_Catalog/js/price-utils'
+], function ($, Component, storage, ko, urlBuilder, orderStatus, OrderView, priceHelper) {
     'use strict';
 
     return Component.extend({
@@ -18,13 +19,13 @@ define([
             template: 'Bkademy_Webpos/sales/order/list'
         },
         items: ko.observableArray([]),
+        selectedOrder: ko.observable(null),
         groupDays: [],
         groupDaysFilter: [],
         statusObject: orderStatus.getStatusObject(),
         statusArrayDefault: orderStatus.getStatusArray(),
         searchKey: ko.observable(''),
         pageSize: 1000,
-        selectedOrder: ko.observable(null),
         numberOfPage: ko.observable(1),
         curPage: ko.observable(1),
 
@@ -68,7 +69,6 @@ define([
                         }
                     }
                 });
-                console.log(itemsOrder);
                 self.items(itemsOrder);
                 self.numberOfPage(response.total_count);
                 self.curPage(pageNumber);
@@ -210,7 +210,7 @@ define([
         },
 
         getGrandTotal: function (data) {
-            return (data.base_grand_total);
+            return priceHelper.formatPrice(data.base_grand_total);
         },
 
         getCreatedAt: function (data) {
@@ -231,8 +231,12 @@ define([
         },
 
         loadOrder: function(data) {
+            var self = this;
             OrderView().setData(data);
-            console.log(data);
+        },
+
+        test: function () {
+            console.log('bbbad');
         },
 
         filter: function (element, event) {

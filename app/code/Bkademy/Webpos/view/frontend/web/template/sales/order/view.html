@@ -72,14 +72,11 @@
             <div class="action-button">
                 <!-- ko if: showInvoiceButton -->
                 <button class="button invoice btn-cl-cfg-active" data-toggle="modal"
-                        data-bind="text: ('Invoice'), click: invoice.bind($data, 'invoice')"/>
+                        data-bind="text: ('Invoice'), click: invoice.bind($data)"/>
                 <!--/ko-->
+                <!-- ko if: showShipmentButton -->
                 <button class="button invoice btn-cl-cfg-active" data-toggle="modal"
-                        data-bind="text: ('Shipment'), click: shipment.bind($data, 'shipment')"/>
-                <button class="button invoice btn-cl-cfg-active" data-toggle="modal"
-                        data-bind="text: ('Refund'), click: refund.bind($data, 'refund')"/>
-                <!-- ko if: canSync -->
-                <!--<button class="button invoice btn-cl-cfg-active" data-bind="text: ('Sync'), click: syncOrder"/>-->
+                        data-bind="text: ('Shipment'), click: shipment.bind($data)"/>
                 <!--/ko-->
             </div>
         </div>

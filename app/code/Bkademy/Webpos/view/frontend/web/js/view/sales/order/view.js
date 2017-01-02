@@ -19,7 +19,9 @@ define(
         'Bkademy_Webpos/js/model/sales/order/status',
         'Bkademy_Webpos/js/model/url-builder',
         'mage/storage',
-        'Bkademy_Webpos/js/helper/alert'
+        'Bkademy_Webpos/js/helper/alert',
+        'Bkademy_Webpos/js/view/sales/order/list',
+        'Magento_Catalog/js/price-utils'
         // 'Bkademy_Webpos/js/model/checkout/checkout',
         // 'Bkademy_Webpos/js/model/event-manager',
         // 'Bkademy_Webpos/js/action/cart/checkout',
@@ -42,15 +44,17 @@ define(
         orderStatus,
         urlBuilder,
         storage,
-        alertHelper
+        alertHelper,
+        List,
+        priceHelper
         // CheckoutModel,
         // eventmanager,
         // Checkout,
         // priceHelper
         // datetimeHelper,
         // ReOrder
-        ) {
-    "use strict";
+    ) {
+        "use strict";
 
         return Component.extend({
             orderData: ko.observable(null),
@@ -102,8 +106,31 @@ define(
                 });
 
                 self.showInvoiceButton = ko.pureComputed(function () {
-                    return (self.canInvoice() && self.cannotSync());
+                    var orderData = self.orderData();
+                    if(orderData.state === 'complete' || orderData.state === 'closed')
+                        return false;
+                    var allInvoiced = true;
+                    $.each(orderData.items, function(index, value){
+                        if(parseFloat(value.qty_ordered) - parseFloat(value.qty_invoiced) - parseFloat(value.qty_canceled) > 0)
+                            allInvoiced = false;
+                    });
+                    if (!allInvoiced)
+                        return true;
+                    return false;
                 });
+
+                self.showShipmentButton = ko.pureComputed(function () {
+                    var orderData = self.orderData();
+                    var allShip = true;
+                    $.each(orderData.items, function(index, value){
+                        if(parseFloat(value.qty_ordered) - parseFloat(value.qty_shipped) - parseFloat(value.qty_refunded) - parseFloat(value.qty_canceled)>0)
+                            allShip = false;
+                    });
+                    if (!allShip)
+                        return true;
+                    return false;
+                });
+
                 // eventmanager.observer('sales_order_afterSave', function (event, data) {
                 //     if (data.response && data.response.entity_id > 0) {
                 //         var deferedSave = $.Deferred();
@@ -119,22 +146,34 @@ define(
                 }
             },
 
-            invoice: function (type) {
-                var orderId = this.orderData().entity_id;
+            invoice: function (data) {
+                var orderData = this.orderData();
+                var orderId = orderData.entity_id;
+                var itemsOrder = orderData.items;
+                var items = {};
+                var i = 0;
+                $.each(itemsOrder, function (index, value) {
+                    var itemsData = {};
+                    itemsData.qty = value.qty_ordered;
+                    itemsData.order_item_id = value.item_id;
+                    items[i] = itemsData;
+                    i++;
+                });
                 var self = this;
                 var itemsOrder = [];
                 var params = {};
-                var serviceUrl = urlBuilder.createUrl('/order/'+ orderId + '/invoice', params);
-                var payload = {};
+                var serviceUrl = urlBuilder.createUrl('/webpos/invoices/create', params);
+                var payload = {entity: {orderId: orderId, items: items}};
                 storage.post(
                     serviceUrl, JSON.stringify(payload)
                 ).done(function (response) {
+                    self.setData(response);
+                    List().test();
                     alertHelper({
                         priority: 'success',
                         title: 'sucess',
                         message: $t('Create invoice successfully!')
                     });
-                    console.log(response);
                 }).fail(function (response) {
                     alertHelper({
                         priority: 'warning',
@@ -144,16 +183,29 @@ define(
                 });
             },
 
-            shipment: function (type) {
+            shipment: function (data) {
+                var orderData = this.orderData();
+                var orderId = orderData.entity_id;
+                var itemsOrder = orderData.items;
+                var items = {};
+                var i = 0;
+                $.each(itemsOrder, function (index, value) {
+                    var itemsData = {};
+                    itemsData.qty = value.qty_ordered;
+                    itemsData.order_item_id = value.item_id;
+                    items[i] = itemsData;
+                    i++;
+                });
                 var self = this;
-                var orderId = this.orderData().entity_id;
                 var itemsOrder = [];
                 var params = {};
-                var serviceUrl =  urlBuilder.createUrl('/order/'+ orderId + '/ship', params);
-                var payload = {};
+                var serviceUrl = urlBuilder.createUrl('/webpos/shipment/create', params);
+                var payload = {entity: {orderId: orderId, items: items}};
                 storage.post(
                     serviceUrl, JSON.stringify(payload)
                 ).done(function (response) {
+                    self.setData(response);
+                    List().test();
                     alertHelper({
                         priority: 'success',
                         title: 'sucess',
@@ -211,7 +263,7 @@ define(
                                 var totalCode = value.totalName.replace("base_", "");
                                 self.totalValues.push(
                                     {
-                                        totalValue: (value.isPrice)?priceHelper.formatPrice(self.orderData()[totalCode]):self.orderData()[totalCode]+' '+value.valueLabel,
+                                        totalValue: (value.isPrice)?priceUtils.formatPrice(self.orderData()[totalCode]):self.orderData()[totalCode]+' '+value.valueLabel,
                                         totalLabel: value.totalName == 'base_discount_amount' &&
                                         (self.orderData().discount_description || self.orderData().coupon_code) ?
                                         $t(value.totalLabel) + ' (' + (self.orderData().discount_description ?
@@ -246,7 +298,7 @@ define(
                 // if (this.orderViewObject.isShowActionPopup.call())
                 //     this.orderViewObject.isShowActionPopup(false);
                 // else
-                    this.orderViewObject.isShowActionPopup(true);
+                this.orderViewObject.isShowActionPopup(true);
             },
 
             showPopup: function (type) {
@@ -306,7 +358,7 @@ define(
 
             getPrice: function (label) {
                 if (this.orderData().order_currency_code == window.webposConfig.currentCurrencyCode) {
-                    return (this.orderData()[label]);
+                    return priceHelper.formatPrice(this.orderData()[label]);
                 }
                 return this.convertAndFormatPrice(
                     this.orderData()['base_' + label],
@@ -316,13 +368,13 @@ define(
 
             getGrandTotal: function () {
                 if (this.orderData().order_currency_code == window.webposConfig.currentCurrencyCode) {
-                    return (this.orderData().grand_total);
+                    return priceHelper.formatPrice(this.orderData().grand_total);
                 }
-                return this.convertAndFormatPrice(this.orderData().base_grand_total, this.orderData().base_currency_code)
+                return this.formatPrice(this.orderData().base_grand_total)
             },
 
-            convertAndFormatPrice: function (price, from, to) {
-                return price;
+            convertAndFormatPrice: function (price) {
+                return priceHelper.formatPrice(price);
             },
 
             canShowComment: function () {

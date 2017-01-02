@@ -139,7 +139,6 @@ define(
             _prepareItems: function () {
                 var deferred = $.Deferred();
                 var self = this;
-                console.log('aaaaaaaaaaaaa');
                 var params = {};
                 var serviceUrl = urlBuilder.createUrl('/webpos/categories?searchCriteria'
                     , params);
