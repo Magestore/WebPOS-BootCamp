@@ -65,7 +65,7 @@ class InstallSchema implements InstallSchemaInterface
                 'status',
                 \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
                 null,
-                ['nullable' => false, 'default' => 0],
+                ['nullable' => false, 'default' => 2],
                 'status'
             );
 
