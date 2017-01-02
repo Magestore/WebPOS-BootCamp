@@ -60,6 +60,21 @@
                 type="Bkademy\Webpos\Model\Payment\OrderPayment"/>
     <!-- end webpos order payment api -->
 
+    <!-- shipment api -->
+    <preference for="Bkademy\Webpos\Api\Sales\ShipmentRepositoryInterface"
+                type="Bkademy\Webpos\Model\Sales\Order\ShipmentRepository"/>
+    <!-- end shipment api -->
+
+    <!-- creditmemo api -->
+    <preference for="Bkademy\Webpos\Api\Sales\CreditmemoRepositoryInterface"
+                type="Bkademy\Webpos\Model\Sales\Order\CreditmemoRepository"/>
+    <!-- end creditmemo api -->
+
+    <!-- invoice api -->
+    <preference for="Bkademy\Webpos\Api\Sales\InvoiceRepositoryInterface"
+                type="Bkademy\Webpos\Model\Sales\Order\InvoiceRepository"/>
+    <!-- end invoice api -->
+
     <type name="Bkademy\Webpos\Model\WebposConfigProvider\CompositeConfigProvider">
         <arguments>
             <argument name="configProviders" xsi:type="array">

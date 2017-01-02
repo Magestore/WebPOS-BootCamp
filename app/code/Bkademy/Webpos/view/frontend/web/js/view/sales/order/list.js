@@ -9,8 +9,9 @@ define([
     'ko',
     'Bkademy_Webpos/js/model/url-builder',
     'Bkademy_Webpos/js/model/sales/order/status',
-    'Bkademy_Webpos/js/view/sales/order/view'
-], function ($, Component, storage, ko, urlBuilder, orderStatus, OrderView) {
+    'Bkademy_Webpos/js/view/sales/order/view',
+    'Magento_Catalog/js/price-utils'
+], function ($, Component, storage, ko, urlBuilder, orderStatus, OrderView, priceHelper) {
     'use strict';
 
     return Component.extend({
@@ -18,12 +19,13 @@ define([
             template: 'Bkademy_Webpos/sales/order/list'
         },
         items: ko.observableArray([]),
+        selectedOrder: ko.observable(null),
         groupDays: [],
+        groupDaysFilter: [],
         statusObject: orderStatus.getStatusObject(),
         statusArrayDefault: orderStatus.getStatusArray(),
         searchKey: ko.observable(''),
         pageSize: 1000,
-        selectedOrder: ko.observable(null),
         numberOfPage: ko.observable(1),
         curPage: ko.observable(1),
 
@@ -162,17 +164,17 @@ define([
             })
         },
 
-        loadItem: function (data, event) {
-            console.log(data);
-            // var viewManager = require('Magestore_Webpos/js/view/layout');
-            // eventManager.dispatch('sales_order_list_load_order', {'order': data});
-            // if (!this.orderViewObject) {
-            //     this.orderViewObject = viewManager.getSingleton('view/sales/order/view');
-            // }
-            // this.orderViewObject.setData(data, this);
-            // viewManager.getSingleton('view/sales/order/action').setData(data, this);
-            this.selectedOrder(data ? data.entity_id : null);
-        },
+        // loadItem: function (data, event) {
+        //     console.log(data);
+        //     // var viewManager = require('Magestore_Webpos/js/view/layout');
+        //     // eventManager.dispatch('sales_order_list_load_order', {'order': data});
+        //     // if (!this.orderViewObject) {
+        //     //     this.orderViewObject = viewManager.getSingleton('view/sales/order/view');
+        //     // }
+        //     // this.orderViewObject.setData(data, this);
+        //     // viewManager.getSingleton('view/sales/order/action').setData(data, this);
+        //     this.selectedOrder(data ? data.entity_id : null);
+        // },
 
         updateOrderListData: function (item) {
             var items = this.items();
@@ -208,7 +210,7 @@ define([
         },
 
         getGrandTotal: function (data) {
-            return (data.base_grand_total);
+            return priceHelper.formatPrice(data.base_grand_total);
         },
 
         getCreatedAt: function (data) {
@@ -228,12 +230,69 @@ define([
 
         },
 
-        loadCustomer: function(data) {
+        loadOrder: function(data) {
+            var self = this;
             OrderView().setData(data);
         },
 
-        filter: function () {
+        test: function () {
+            console.log('bbbad');
+        },
 
+        filter: function (element, event) {
+            if(this.isLoading) {
+                return;
+            }
+            var itemsOrder = [];
+            this.stopLazyLoad = false;
+            var searchKey = event.target.value;
+            var self = this;
+            var params = {};
+            var serviceUrl = urlBuilder.createUrl('/webpos/orders?searchCriteria[pageSize]='+this.pageSize+
+                '&searchCriteria[filterGroups][0][filters][0][field]=customer_firstname' +
+                '&searchCriteria[filterGroups][0][filters][0][value]=%'+searchKey+'%'+
+                '&searchCriteria[filterGroups][0][filters][0][conditionType]=like'
+                , params);
+            var payload = {};
+            storage.get(
+                serviceUrl, JSON.stringify(payload)
+            ).done(function (response) {
+                console.log(response);
+                var orderList = response.items;
+                var dayIndex = -1;
+                $.each(orderList, function (index, value) {
+                    var createdAt = value.created_at;
+                    var day = createdAt.split(' ')[0];
+                    if (self.groupDaysFilter.indexOf(day.toString()) == -1) {
+                        dayIndex++;
+                        self.groupDaysFilter.push(day);
+                        itemsOrder[dayIndex] = {};
+                        itemsOrder[dayIndex].day = day;
+                        itemsOrder[dayIndex].orderItems = [];
+                        itemsOrder[dayIndex].orderItems.push(value);
+                    } else {
+                        if (itemsOrder[self.groupDaysFilter.indexOf(day.toString())]) {
+                            itemsOrder[self.groupDaysFilter.indexOf(day.toString())].orderItems.push(value);
+                        } else {
+                            itemsOrder[self.groupDaysFilter.indexOf(day.toString())] = {};
+                            itemsOrder[self.groupDaysFilter.indexOf(day.toString())].day = day;
+                            itemsOrder[self.groupDaysFilter.indexOf(day.toString())].orderItems = [];
+                            itemsOrder[self.groupDaysFilter.indexOf(day.toString())].orderItems.push(value);
+                        }
+                    }
+                });
+                self.items(itemsOrder);
+                self.numberOfPage(response.total_count);
+                self.curPage(1);
+                //self.hideLoader();
+                if(!self.orderData.getData() || !self.orderData.getData().id) {
+                    self.orderData.setData(response.items[0]);
+                }
+            }).fail(function (response) {
+
+            }).always(function (response){
+                self.isLoading = false;
+            });
         },
 
         showCreateForm: function(){
