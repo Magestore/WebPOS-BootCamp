@@ -12,7 +12,7 @@
     <main class="main-content" data-bind="afterRender: afterRenderCheckout">
         <div class="wrap-list-product">
             <div class="panel-group" id="checkout-method">
-                <div class="panel panel-default" data-bind="visible:shipAble">
+                <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" data-parent="#checkout-method"  href="#shipping-method" data-bind="text:shippingHeader"></a>
@@ -47,21 +47,6 @@
     <footer class="checkout-footer">
         <div class="wrap-footer">
             <ul>
-                <li data-bind="afterRender:initCheckboxStyle">
-                    <div class="shipment-box">
-                        <label data-bind="i18n:'Mark as shipped',visible:shipAble"></label>
-                        <div class="switch-box" data-bind="visible:shipAble">
-                            <input type="checkbox" class="ios" data-bind="event:{change:createShipment}"/>
-                        </div>
-                    </div>
-                    <div class="invoice-box">
-                        <label data-bind="i18n:'Create Invoice'"></label>
-                        <div id="can_paid" class="switch-box">
-                            <input data-bind="event:{change:createInvoice}"
-                                   type="checkbox" class="ios"/>
-                        </div>
-                    </div>
-                </li>
                 <li class="actions">
                     <div class="row">
                         <div class="col-sm-12">
@@ -72,14 +57,14 @@
             </ul>
         </div>
     </footer>
-    <!-- ko foreach: getRegion('webpos_checkout_success') -->
+    <!-- ko foreach: getRegion('webpos.checkout.success') -->
     <!-- ko template: getTemplate() --><!-- /ko -->
     <!-- /ko -->
     <div class="indicator" data-bind="visible:loading">
         <div class="spinner"></div>
     </div>
 
-    <!-- ko foreach: getRegion('webpos_checkout_print_receipt') -->
+    <!-- ko foreach: getRegion('webpos.checkout.print.receipt') -->
     <!-- ko template: getTemplate() --><!-- /ko -->
     <!-- /ko -->
 </div>

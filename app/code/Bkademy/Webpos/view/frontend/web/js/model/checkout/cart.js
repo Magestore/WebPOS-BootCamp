@@ -20,33 +20,19 @@ define(
             loading: ko.observable(),
             currentPage: ko.observable(),
             customerId: ko.observable(''),
-            customerGroup: ko.observable(''),
-            customerData: ko.observable({}),
-            billingAddress: ko.observable(),
-            shippingAddress: ko.observable(),
-            GUEST_CUSTOMER_NAME: "Guest",
             BACK_CART_BUTTON_CODE: "back_to_cart",
             CHECKOUT_BUTTON_CODE: "checkout",
-            HOLD_BUTTON_CODE: "hold",
             PAGE:{
                 CART:"cart",
                 CHECKOUT:"checkout"
             },
             KEY: {
-                QUOTE_INIT:'quote_init',
                 ITEMS:'items',
                 SHIPPING:'shipping',
                 PAYMENT:'payment',
                 TOTALS:'totals',
                 QUOTE_ID:"quote_id",
-                TILL_ID:"till_id",
-                CURRENCY_ID:"currency_id",
-                CUSTOMER_ID:"customer_id",
-                CUSTOMER_DATA:"customer_data",
-                BILLING_ADDRESS:"billing_address",
-                SHIPPING_ADDRESS:"shipping_address",
-                STORE_ID:"store_id",
-                STORE:"store",
+                CUSTOMER_ID:"customer_id"
             },
             DATA:{
                 STATUS: {
@@ -57,6 +43,7 @@ define(
             initialize: function(){
                 var self = this;
                 self.initObserver();
+                self.initDefaultData();
                 return self;
             },
             initObserver: function(){
@@ -65,10 +52,12 @@ define(
                     return (self.currentPage() == self.PAGE.CHECKOUT)?true:false;
                 });
                 Event.observer('init_quote_after', function(event, response){
-                    if(response && response.data){
-                        self.saveQuoteData(response.data);
-                    }
+                    self.saveQuoteData(response);
                 });
+            },
+            initDefaultData: function(){
+                var self = this;
+                self.customerId(1);
             },
             emptyCart: function(){
                 var self = this;
@@ -79,23 +68,18 @@ define(
                 self.resetQuoteInitData();
             },
             addCustomer: function(data){
-                this.customerData(data);
                 this.customerId(data.id);
-                this.customerGroup(data.group_id);
             },
             removeCustomer: function(){
                 var self = this;
-                self.customerId("");
-                self.customerGroup("");
-                self.customerData({});
-                Event.dispatch('cart_remove_customer_after',{guest_customer_name:self.GUEST_CUSTOMER_NAME});
+                self.customerId(1);
+                Event.dispatch('cart_remove_customer_after','');
             },
             removeItem: function(itemId){
                 Items.removeItem(itemId);
                 if(Items.items().length == 0){
                     Totals.totals.removeAll();
                 }
-                Event.dispatch('collect_totals', '');
                 Event.dispatch('cart_item_remove_after',Items.items());
             },
             addProduct: function(data){
@@ -133,35 +117,15 @@ define(
                 }
                 return itemsData;
             },
-            isVirtual: function(){
-                var isVirtual = true;
-                if(Items.items().length > 0){
-                    var notVirtualItem = ko.utils.arrayFilter(Items.items(), function(item) {
-                        return item.is_virtual() == false;
-                    });
-                    isVirtual = (notVirtualItem.length > 0)?false:true;
-                }
-                return isVirtual;
-            },
             totalItems: function(){
                 return Items.totalItems();
             },
-            totalShipableItems: function(){
-                return Items.totalShipableItems();
-            },
-            getQuoteCustomerParams: function(){
-                var self = this;
-                return {
-                    customer_id: self.customerId(),
-                    billing_address: self.billingAddress(),
-                    shipping_address: self.shippingAddress()
-                };
-            },
             resetQuoteInitData: function(){
                 var self = this;
-                return {
+                var data = {
                     quote_id: 0
                 };
+                self.saveQuoteData(data);
             },
             getQuoteInitParams: function(){
                 var self = this;
@@ -171,35 +135,15 @@ define(
                 };
             },
             /**
-             * Save cart only - not distch events
-             * @returns {*}
-             */
-            saveQuote: function(){
-                var self = this;
-                var params = self.getQuoteInitParams();
-                params.items = self.getItemsInfo();
-                params.customer_id = (self.customerId())?self.customerId():0;
-                params.section = self.KEY.QUOTE_INIT;
-                self.loading(true);
-                var apiRequest = $.Deferred();
-                CartResource().saveCart(params, apiRequest);
-
-                apiRequest.always(function(){
-                    self.loading(false);
-                });
-                return apiRequest;
-            },
-            /**
              * Save cart and dispatch events
-             * @param saveBeforeRemove
              * @returns {*}
              */
-            saveQuoteBeforeCheckout: function(saveBeforeRemove){
+            saveQuoteBeforeCheckout: function(){
                 var self = this;
                 var params = self.getQuoteInitParams();
                 params.items = self.getItemsInfo();
                 params.customer_id = (self.customerId())?self.customerId():0;
-                params.section = (saveBeforeRemove == true)?self.KEY.QUOTE_INIT:[];
+                params.section = [];
                 self.loading(true);
                 var apiRequest = $.Deferred();
                 CartResource().saveQuoteBeforeCheckout(params, apiRequest);
@@ -239,7 +183,7 @@ define(
             removeQuoteItem: function(itemId){
                 var self = this;
                 if(Items.items().length == 1){
-                    return self.removeCartOnline();
+                    return self.removeQuote();
                 }
 
                 var params = self.getQuoteInitParams();

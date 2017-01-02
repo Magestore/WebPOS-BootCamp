@@ -89,4 +89,6 @@
                 type="Bkademy\Webpos\Model\Checkout\QuoteData"/>
     <preference for="Bkademy\Webpos\Api\Data\Checkout\ItemBuyRequestInterface"
                 type="Bkademy\Webpos\Model\Checkout\ItemBuyRequest"/>
+    <preference for="Bkademy\Webpos\Api\Data\Checkout\ResponseInterface"
+                type="Bkademy\Webpos\Model\Checkout\Response"/>
 </config>

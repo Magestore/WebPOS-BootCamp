@@ -33,10 +33,6 @@ define(
                 var callBackEvent = this.getCallBackEvent("saveCart");
                 this.callApi(apiUrl, params, deferred, callBackEvent);
             },
-            saveQuote: function(params,deferred){
-                var apiUrl = this.apiSaveCartUrl;
-                this.callApi(apiUrl, params, deferred);
-            },
             removeQuote: function(params,deferred){
                 var apiUrl = this.apiRemoveCartUrl;
                 var callBackEvent = this.getCallBackEvent("removeCart");

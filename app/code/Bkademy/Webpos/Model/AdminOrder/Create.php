@@ -7,20 +7,49 @@ use Bkademy\Webpos\Api\Data\Checkout\ItemBuyRequestInterface;
 class Create extends \Magento\Sales\Model\AdminOrder\Create
 {
     /**
+     * @var int
+     */
+    protected $_quote_id = 0;
+
+    /**
+     * @return \Magento\Quote\Api\Data\CartInterface
+     */
+    public function createQuote(){
+        $session = $this->getSession();
+        $session->clearStorage();
+        $quote = $this->quoteFactory->create();
+        $quote->setIsActive(false);
+        $quote->setIsMultiShipping(false);
+        $quote->setStoreId($session->getStore()->getId());
+        $this->quoteRepository->save($quote);
+        return $quote;
+    }
+
+    /**
      * @param string $quoteId
      * @return $this
      */
     public function start($quoteId){
-        $quote = ($quoteId)?$this->quoteRepository->get($quoteId):$this->quoteFactory->create();
+        $session = $this->getSession();
+        if($quoteId){
+            $this->_quote_id = $quoteId;
+            $quote = $this->quoteRepository->get($quoteId, [$session->getStore()->getId()]);
+        }else {
+            $quote = $this->createQuote();
+        }
         $this->setQuote($quote);
+        $this->saveQuote();
         return $this;
     }
 
     /**
+     * @param bool $saveQuote
      * @return $this
      */
-    public function finish(){
-        $this->saveQuote();
+    public function finish($saveQuote = true){
+        if($saveQuote){
+            $this->saveQuote();
+        }
         return $this;
     }
 
@@ -29,11 +58,33 @@ class Create extends \Magento\Sales\Model\AdminOrder\Create
      */
     public function saveQuote()
     {
-        if ($this->_needCollect) {
-            $this->getQuote()->collectTotals();
-        }
+        $this->collectRates();
+        $this->collectShippingRates();
         $this->quoteRepository->save($this->getQuote());
         return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function getQuote()
+    {
+        $quoteId = $this->_quote_id;
+        if(!$quoteId){
+            $quote = $this->createQuote();
+        }else{
+            $session = $this->getSession();
+            $quote = $this->quoteRepository->get($quoteId, [$session->getStore()->getId()]);
+        }
+        $this->setQuote($quote);
+        return $quote;
+    }
+
+    /**
+     * @param \Magento\Quote\Model\Quote $quote
+     */
+    public function setQuote(\Magento\Quote\Model\Quote $quote){
+        $this->_quote_id = $quote->getId();
     }
 
     /**
@@ -89,6 +140,8 @@ class Create extends \Magento\Sales\Model\AdminOrder\Create
      */
     public function removeQuote(){
         $this->quoteRepository->delete($this->getQuote());
+        $quote = $this->quoteFactory->create();
+        $this->setQuote($quote);
         return $this;
     }
 
@@ -106,13 +159,14 @@ class Create extends \Magento\Sales\Model\AdminOrder\Create
     }
 
     /**
-     * @param $customerId
+     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
      * @return $this
      */
-    public function setCustomer($customerId){
-        if(!empty($customerId)){
+    public function assignCustomer($customer){
+        if($customer){
             $this->getQuote()->setCustomerIsGuest(false);
-            $this->getQuote()->setCustomerId($customerId);
+            $this->getQuote()->assignCustomer($customer);
+            $this->getSession()->setCustomerId($customer->getId());
         }else{
             $this->getQuote()->setCustomerIsGuest(true);
         }

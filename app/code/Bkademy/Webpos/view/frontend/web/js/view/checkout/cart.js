@@ -18,29 +18,6 @@ define([
          */
         loading: CartModel.loading,
         /**
-         * Current customer name
-         */
-        currentCustomerName: ko.pureComputed(function() {
-            return 'Customer Name';
-        }),
-        /**
-         * Current customer ID
-         */
-        currentCustomerId: ko.pureComputed(function() {
-            return CartModel.customerId();
-        }),
-        /**
-         * Flag to check customer ID existing
-         */
-        isShowCustomerId: ko.pureComputed(function() {
-            return 0;
-        }),
-
-        /* Can edit customer or not*/
-        isCanEditCustomer: ko.pureComputed(function () {
-            return 0;
-        }),
-        /**
          * Current page (cart/checkout)
          */
         currentPage: CartModel.currentPage,
