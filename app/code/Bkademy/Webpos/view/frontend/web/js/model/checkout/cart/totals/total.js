@@ -1,9 +1,3 @@
-/*
- *  Copyright © 2016 Magestore. All rights reserved.
- *  See COPYING.txt for license details.
- *
- */
-
 define(
     [
         'jquery',
@@ -16,12 +10,20 @@ define(
         return UiClass.extend({
             initialize: function () {
                 this._super();
+                /**
+                 * Object init fields key
+                 * @type {string[]}
+                 */
                 this.initFields = [
                     'title',
                     'value',
                     'code'
                 ];
             },
+            /**
+             * Init data to object
+             * @param data
+             */
             init: function(data){
                 var self = this;
                 $.each(self.initFields, function(index, fieldKey){
@@ -33,6 +35,11 @@ define(
                     return PriceUtils.formatPrice(value, window.webposConfig.priceFormat);
                 });
             },
+            /**
+             * Set total data
+             * @param key
+             * @param value
+             */
             setData: function(key,value){
                 if(typeof this[key] != "undefined"){
                     if(this.autoValue() == true){
@@ -44,6 +51,11 @@ define(
                     }
                 }
             },
+            /**
+             * Get total data
+             * @param key
+             * @returns {{}}
+             */
             getData: function(key){
                 var self = this;
                 var data = {};

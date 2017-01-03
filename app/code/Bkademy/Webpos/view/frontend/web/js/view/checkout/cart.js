@@ -43,16 +43,29 @@ define([
             this.createdOrder = ko.pureComputed(function(){
                 return false;
             });
+
+            /**
+             * Go to checkout
+             */
             Event.observer('go_to_checkout_page', function(){
                 self.switchToCheckout();
             });
+            /**
+             * Go to cart
+             */
             Event.observer('go_to_cart_page', function(){
                 self.switchToCart();
             });
+            /**
+             * Clear cart and go to cart page after click New Order button on Success
+             */
             Event.observer('start_new_order', function(){
                 self.switchToCart();
                 self.emptyCart();
             });
+            /**
+             * Go to checkout page after save
+             */
             Event.observer('save_cart_after', function(event, data){
                 if(data && data.response && data.response.status){
                     Event.dispatch('go_to_checkout_page', '', true);

@@ -1,9 +1,3 @@
-/*
- *  Copyright © 2016 Magestore. All rights reserved.
- *  See COPYING.txt for license details.
- *
- */
-
 define(
     [
         'jquery',
@@ -16,10 +10,23 @@ define(
     ],
     function ($, ko, Items, Totals, Event, DataManager, CartResource) {
         "use strict";
+
         var CartModel = {
+            /**
+             * Variable to show ajax loader
+             */
             loading: ko.observable(),
+            /**
+             * Variable to check current page - checkout or cart
+             */
             currentPage: ko.observable(),
+            /**
+             * Current customer id
+             */
             customerId: ko.observable(''),
+            /**
+             * Some const variable
+             */
             BACK_CART_BUTTON_CODE: "back_to_cart",
             CHECKOUT_BUTTON_CODE: "checkout",
             PAGE:{
@@ -40,12 +47,19 @@ define(
                     ERROR: '0'
                 }
             },
+            /**
+             * Initialize
+             * @returns {CartModel}
+             */
             initialize: function(){
                 var self = this;
                 self.initObserver();
                 self.initDefaultData();
                 return self;
             },
+            /**
+             * Observer events
+             */
             initObserver: function(){
                 var self = this;
                 self.isOnCheckoutPage = ko.pureComputed(function(){
@@ -55,10 +69,16 @@ define(
                     self.saveQuoteData(response);
                 });
             },
+            /**
+             * Set default data
+             */
             initDefaultData: function(){
                 var self = this;
                 self.customerId(1);
             },
+            /**
+             * Clear cart
+             */
             emptyCart: function(){
                 var self = this;
                 Items.items.removeAll();
@@ -67,14 +87,25 @@ define(
                 Event.dispatch('cart_empty_after','');
                 self.resetQuoteInitData();
             },
+            /**
+             * Add customer
+             * @param data
+             */
             addCustomer: function(data){
                 this.customerId(data.id);
             },
+            /**
+             * Remove customer
+             */
             removeCustomer: function(){
                 var self = this;
                 self.customerId(1);
                 Event.dispatch('cart_remove_customer_after','');
             },
+            /**
+             * Remove cart item
+             * @param itemId
+             */
             removeItem: function(itemId){
                 Items.removeItem(itemId);
                 if(Items.items().length == 0){
@@ -82,6 +113,11 @@ define(
                 }
                 Event.dispatch('cart_item_remove_after',Items.items());
             },
+            /**
+             * Add product to cart
+             * @param data
+             * @returns {boolean}
+             */
             addProduct: function(data){
                 var self = this;
                 if(self.loading()){
@@ -89,6 +125,12 @@ define(
                 }
                 Items.addItem(data);
             },
+            /**
+             * Update cart item data
+             * @param itemId
+             * @param key
+             * @param value
+             */
             updateItem: function(itemId, key, value){
                 var validate = true;
                 var item = Items.getItem(itemId);
@@ -96,9 +138,19 @@ define(
                     Items.setItemData(itemId, key, value);
                 }
             },
+            /**
+             * Get cart item data
+             * @param itemId
+             * @param key
+             * @returns {*}
+             */
             getItemData: function(itemId, key){
                 return Items.getItemData(itemId, key);
             },
+            /**
+             * Get items info buy request
+             * @returns {Array}
+             */
             getItemsInfo: function(){
                 var itemsInfo = [];
                 if(Items.items().length > 0){
@@ -108,6 +160,10 @@ define(
                 }
                 return itemsInfo;
             },
+            /**
+             * Get items init data
+             * @returns {Array}
+             */
             getItemsInitData: function(){
                 var itemsData = [];
                 if(Items.items().length > 0){
@@ -117,9 +173,16 @@ define(
                 }
                 return itemsData;
             },
+            /**
+             * Get total items number
+             * @returns {*}
+             */
             totalItems: function(){
                 return Items.totalItems();
             },
+            /**
+             * Reset quote data
+             */
             resetQuoteInitData: function(){
                 var self = this;
                 var data = {
@@ -127,6 +190,10 @@ define(
                 };
                 self.saveQuoteData(data);
             },
+            /**
+             * Get quote data params for API request
+             * @returns {{quote_id: number}}
+             */
             getQuoteInitParams: function(){
                 var self = this;
                 var quoteId = DataManager.getData(self.KEY.QUOTE_ID);

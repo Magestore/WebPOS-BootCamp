@@ -1,31 +1,44 @@
-/*
- *  Copyright © 2016 Magestore. All rights reserved.
- *  See COPYING.txt for license details.
- *
- */
-
 define(
     [
         'jquery',
         'ko',
         'Bkademy_Webpos/js/model/checkout/cart',
         'Bkademy_Webpos/js/model/event-manager',
-        'Bkademy_Webpos/js/model/resource/checkout/checkout',
-        'mage/translate'
+        'Bkademy_Webpos/js/model/resource/checkout/checkout'
     ],
-    function ($, ko, CartModel, Event, CheckoutResource, __) {
+    function ($, ko, CartModel, Event, CheckoutResource) {
         "use strict";
         var CheckoutModel = {
-            selectedPayments: ko.observableArray(),
+            /**
+             * Selected shipping method title
+             */
             selectedShippingTitle: ko.observable(),
+            /**
+             * Selected shipping method code
+             */
             selectedShippingCode: ko.observable(),
+            /**
+             * Selected payment method code
+             */
             paymentCode: ko.observable(),
+            /**
+             * Created order data
+             */
             createOrderResult: ko.observable({}),
+            /**
+             * Variable to enable ajax loader
+             */
             loading: ko.observable(),
+            /**
+             * Check if the order has been created
+             * @returns {boolean}
+             */
             isCreatedOrder: function(){
                 return (this.createOrderResult() && this.createOrderResult().increment_id)?true:false;
             },
-
+            /**
+             * Init default data
+             */
             initDefaultData: function(){
                 var self = this;
                 self.selectedShippingTitle('');
@@ -33,6 +46,9 @@ define(
                 self.createOrderResult({});
                 self.initObservable();
             },
+            /**
+             * Observer events
+             */
             initObservable: function(){
                 var self = this;
                 Event.observer('cart_empty_after', function(){
@@ -45,22 +61,38 @@ define(
                     self.loadPaymentOnline();
                 });
             },
+            /**
+             * Reset checkout data
+             */
             resetCheckoutData: function(){
                 var self = this;
                 self.createOrderResult({});
-                self.useWebposShipping();
+                self.useDefaultShipping();
                 CartModel.removeCustomer();
             },
-            useWebposShipping: function(){
-                var self = this;
-                self.selectedShippingCode("webpos_shipping_storepickup");
+            /**
+             * Use default shipping method
+             */
+            useDefaultShipping: function(){
+
             },
+            /**
+             * Save shipping data
+             * @param data
+             */
             saveShipping: function(data){
                 var self = this;
                 if(data.code){
+                    self.selectedShippingTitle(data.title);
+                    self.selectedShippingCode(data.code);
                     self.saveShippingMethod(data.code);
                 }
             },
+            /**
+             * Call API to save shipping method
+             * @param code
+             * @returns {*}
+             */
             saveShippingMethod: function(code){
                 var deferred = $.Deferred();
                 if(code){
@@ -76,6 +108,11 @@ define(
                 }
                 return deferred;
             },
+            /**
+             * Call API to save payment method
+             * @param code
+             * @returns {*}
+             */
             savePaymentMethod: function(code){
                 var deferred = $.Deferred();
                 if(code){
@@ -92,6 +129,10 @@ define(
                 }
                 return deferred;
             },
+            /**
+             * Place order online
+             * @returns {*}
+             */
             placeOrder: function(){
                 var self = this;
                 var deferred = $.Deferred();
@@ -107,8 +148,11 @@ define(
                 });
                 return deferred;
             },
-
-            selectCustomerOnline: function(){
+            /**
+             * Call API to save customer
+             * @returns {*}
+             */
+            selectCustomer: function(){
                 var self = this;
                 var deferred = $.Deferred();
                 var params = CartModel.getQuoteInitParams();
