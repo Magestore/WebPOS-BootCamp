@@ -1,9 +1,3 @@
-/*
- *  Copyright © 2016 Magestore. All rights reserved.
- *  See COPYING.txt for license details.
- *
- */
-
 define(
     [
         'jquery',
@@ -30,15 +24,11 @@ define(
                 var menu = $(AppConfig.ELEMENT_SELECTOR.MENU);
                 var menuMask = $(AppConfig.ELEMENT_SELECTOR.MENU_MASK);
                 var wrapper = $(AppConfig.ELEMENT_SELECTOR.WRAPPER);
-                var notiButton = $(AppConfig.ELEMENT_SELECTOR.NOTIFICATION_BUTTON);
                 if(menu.length > 0){
                     if(menu.hasClass(AppConfig.CLASS.MENU_ACTIVE)){
                         menu.removeClass(AppConfig.CLASS.MENU_ACTIVE);
                         if (wrapper.length > 0) {
                             wrapper.removeClass(AppConfig.CLASS.WRAPPER_MENU_ACTIVE);
-                        }
-                        if (notiButton.length > 0) {
-                            notiButton.removeClass(AppConfig.CLASS.WRAPPER_MENU_ACTIVE);
                         }
                         if (menuMask.length > 0) {
                             menuMask.removeClass(AppConfig.CLASS.MENU_ACTIVE);
@@ -48,9 +38,6 @@ define(
                         if (wrapper.length > 0) {
                             wrapper.addClass(AppConfig.CLASS.WRAPPER_MENU_ACTIVE);
                         }
-                        if (notiButton.length > 0) {
-                            notiButton.addClass(AppConfig.CLASS.WRAPPER_MENU_ACTIVE);
-                        }
                         if (menuMask.length > 0) {
                             menuMask.addClass(AppConfig.CLASS.MENU_ACTIVE);
                             menuMask.click(function(){
@@ -58,9 +45,6 @@ define(
                                 menuMask.removeClass(AppConfig.CLASS.MENU_ACTIVE);
                                 if (wrapper.length > 0) {
                                     wrapper.removeClass(AppConfig.CLASS.WRAPPER_MENU_ACTIVE);
-                                }
-                                if (notiButton.length > 0) {
-                                    notiButton.removeClass(AppConfig.CLASS.WRAPPER_MENU_ACTIVE);
                                 }
                             });
                         }

@@ -100,8 +100,6 @@ define(
                 CheckoutResource().placeOrder(params,deferred);
                 deferred.done(function(response){
                     if(response.increment_id){
-                        var message = __('Order has been created successfully ') + "#"+response.increment_id;
-                        alert(message);
                         self.createOrderResult(response);
                     }
                 }).always(function(){

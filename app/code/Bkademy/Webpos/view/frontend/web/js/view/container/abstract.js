@@ -10,13 +10,6 @@ define([
             template: 'Bkademy_Webpos/container/default',
             container_id:""
         },
-        initialize: function () {
-            this._super();
-            var self = this;
-            this.containerId = ko.pureComputed(function(){
-                return self.getContainerId();
-            });
-        },
         /**
          * Get container id
          * @returns {string}
