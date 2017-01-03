@@ -10,11 +10,7 @@ define(
         'jquery',
         'ko',
         'uiComponent',
-        // 'Bkademy_Webpos/js/model/sales/order-factory',
-        // 'Bkademy_Webpos/js/view/layout',
-        // 'underscore',
         'mage/translate',
-        // 'Bkademy_Webpos/js/view/base/abstract',
         'Bkademy_Webpos/js/model/sales/order/total',
         'Bkademy_Webpos/js/model/sales/order/status',
         'Bkademy_Webpos/js/model/url-builder',
@@ -22,37 +18,10 @@ define(
         'Bkademy_Webpos/js/helper/alert',
         'Bkademy_Webpos/js/view/sales/order/list',
         'Magento_Catalog/js/price-utils'
-        // 'Bkademy_Webpos/js/model/checkout/checkout',
-        // 'Bkademy_Webpos/js/model/event-manager',
-        // 'Bkademy_Webpos/js/action/cart/checkout',
-        // 'Bkademy_Webpos/js/helper/price',
-        // 'Bkademy_Webpos/js/helper/datetime',
-        // 'Bkademy_Webpos/js/action/cart/reorder'
 
     ],
-    function (
-        require,
-        $,
-        ko,
-        Component,
-        // OrderFactory,
-        // ViewManager,
-        // _,
-        $t,
-        // Component,
-        orderTotal,
-        orderStatus,
-        urlBuilder,
-        storage,
-        alertHelper,
-        List,
-        priceHelper
-        // CheckoutModel,
-        // eventmanager,
-        // Checkout,
-        // priceHelper
-        // datetimeHelper,
-        // ReOrder
+    function (require, $, ko, Component, $t, orderTotal, orderStatus,urlBuilder,
+        storage, alertHelper, List, priceHelper
     ) {
         "use strict";
 
@@ -89,17 +58,6 @@ define(
                 ko.pureComputed(function () {
                     return self.orderData();
                 }).subscribe(function () {
-                    if (self.orderData()) {
-                        // var orderModel = OrderFactory.get();
-                        // self.isCanceled(orderModel.setData(self.orderData()).isCanceled());
-                        // self.canInvoice(orderModel.setData(self.orderData()).canInvoice());
-                        // self.canCancel(orderModel.setData(self.orderData()).canCancel());
-                        // self.canShip(orderModel.setData(self.orderData()).canShip());
-                        // self.canCreditmemo(orderModel.setData(self.orderData()).canCreditmemo());
-                        // self.canSync(orderModel.setData(self.orderData()).canSync());
-                        // self.canTakePayment(orderModel.setData(self.orderData()).canTakePayment())
-                        // self.canUnhold(orderModel.setData(self.orderData()).canUnhold())
-                    }
                 });
                 self.cannotSync = ko.pureComputed(function () {
                     return (self.orderData() && self.orderData().state) ? self.orderData().state != 'notsync' : false;

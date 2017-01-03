@@ -84,50 +84,6 @@
     </footer>
 </div>
 <!-- /ko -->
-<!-- ko if: orderData -->
-<div data-bind="visible: isShowActionPopup" id="form-add-note-order">
-    <ul>
-        <!-- ko if: !isCanceled() && orderData().status != 'notsync' -->
-        <li>
-            <a href="#" data-toggle="modal"
-               class="order-note" data-bind="text: ('Send Email'), click: showPopup.bind($data, 'sendemail')"/>
-        </li>
-        <!--/ko-->
-        <!-- ko if: canShip() && orderData().status != 'notsync' -->
-        <li>
-            <a href="#" data-toggle="modal"
-               class="order-note" data-bind="text: ('Ship'), click: showPopup.bind($data, 'shipment')"/>
-        </li>
-        <!--/ko-->
-        <!-- ko if: canCancel() && orderData().status != 'notsync' -->
-        <li>
-            <a href="#" class="order-note" data-bind="text: ('Cancel'), click: showPopup.bind($data, 'cancel')"/>
-        </li>
-        <!--/ko-->
-        <!-- ko if:  orderData().status != 'notsync' -->
-        <li>
-            <a href="#" data-toggle="modal"
-               class="order-note" data-bind="text: ('Add Comment'), click: showPopup.bind($data, 'comment')"/>
-        </li>
-        <!--/ko-->
-        <li>
-            <a href="#" class="order-note" data-bind="text: ('Re-order'),click: reOrder"/>
-        </li>
-        <!-- ko if: canCreditmemo() && orderData().status != 'notsync'  -->
-        <li class="last">
-            <a href="#" data-toggle="modal"
-               class="order-note" data-bind="text: ('Refund'), click: showPopup.bind($data, 'refund')"/>
-        </li>
-        <!--/ko-->
-        <!-- ko if: canUnhold -->
-        <!--<li class="last">-->
-        <!--<a href="#" data-toggle="modal"-->
-        <!--class="order-note" data-bind="text: ('Unhold'), click: showPopup.bind($data, 'refund')"/>-->
-        <!--</li>-->
-        <!--/ko-->
-    </ul>
-</div>
-<!--/ko-->
 <!-- ko foreach: getRegion('order-payment') -->
 <!-- ko template: getTemplate() --><!-- /ko -->
 <!--/ko-->

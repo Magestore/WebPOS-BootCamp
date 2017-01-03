@@ -464,7 +464,7 @@ body #checkout_container .main-content:hover ::-webkit-scrollbar{visibility: vis
     padding: 7px 25px 12px;
     border-top:1px solid #d7d7d7
 }
-.wrap-item-order{overflow: auto;max-height: calc(100vh - 178px);background:#fff}
+.wrap-item-order{overflow: auto;max-height: calc(100vh - 115px);background:#fff}
 .wrap-item-order.wrap-item-customer{max-height: calc(100vh - 108px);background:#fff}
 .wrap-item-order .not-found{padding:20px 30px}
 .wrap-item-order .not-found h2{font-size: 16px;margin: 0;color: red;}

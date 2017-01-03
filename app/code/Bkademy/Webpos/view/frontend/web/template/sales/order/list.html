@@ -22,13 +22,6 @@
         </header>
 
         <div class="main-item-order">
-            <div class="wrap-status-orders">
-                <ul data-bind="foreach: statusObject">
-                    <li data-bind="attr: {class: statusClass, status: statusClass}">
-                        <a href="#" data-bind="attr: {title: statusTitle}, text: statusLabel"></a>
-                    </li>
-                </ul>
-            </div>
             <div class="wrap-item-order" data-bind="foreach: items">
                 <div class="title-time time-one" data-bind="text: $parent.formatDateGroup(day)"></div>
                 <ul class="list-orders" data-bind="foreach: orderItems">
