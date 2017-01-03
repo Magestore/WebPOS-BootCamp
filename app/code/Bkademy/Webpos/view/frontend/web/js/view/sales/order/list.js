@@ -142,27 +142,6 @@ define([
             return date.getDate() + '/' + month + '/' + date.getFullYear();
         },
 
-        filterStatus: function (data, event) {
-            this.isOnline = false;
-            var el = $(event.currentTarget);
-            if (el.hasClass('selected')) {
-                el.removeClass('selected');
-                this.statusArray.splice(this.statusArray.indexOf(el.attr('status')), 1);
-            }
-            else {
-                el.addClass('selected');
-                this.statusArray.push(el.attr('status'));
-            }
-            this._prepareItems();
-        },
-
-        resetFilterStatus: function () {
-            var self = this;
-            this.statusArray = [];
-            $.each($(this.statusBtn), function (index, value) {
-                $(value).removeClass('selected');
-            })
-        },
 
         // loadItem: function (data, event) {
         //     console.log(data);
@@ -175,25 +154,6 @@ define([
         //     // viewManager.getSingleton('view/sales/order/action').setData(data, this);
         //     this.selectedOrder(data ? data.entity_id : null);
         // },
-
-        updateOrderListData: function (item) {
-            var items = this.items();
-            for (var index in items) {
-                var createdAt = item.created_at;
-                var day = createdAt.split(' ')[0];
-                if (day == items[index].day) {
-                    for (var i in items[index].orderItems) {
-                        if (item.entity_id == items[index].orderItems[i].entity_id) {
-                            items[index].orderItems[i] = item;
-                            this.resetData();
-                            this.setItems(items);
-                            this.loadItem(null);
-                            this.loadItem(item);
-                        }
-                    }
-                }
-            }
-        },
 
         getCustomerName: function (data) {
             if (data.customer_firstname && data.customer_lastname)
@@ -226,19 +186,11 @@ define([
             return datetimeHelper.getTime(dateString);
         },
 
-        formatPrice: function (price) {
-
-        },
-
         loadOrder: function(data) {
             var self = this;
             OrderView().setData(data);
         },
-
-        test: function () {
-            console.log('bbbad');
-        },
-
+        
         filter: function (element, event) {
             if(this.isLoading) {
                 return;

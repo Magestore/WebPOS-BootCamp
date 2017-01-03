@@ -22,12 +22,12 @@
         </header>
 
         <div class="main-item-order">
-            <div class="wrap-item-order" data-bind="foreach: items">
+            <div class="wrap-item-order" data-bind="foreach: items,  event: {scroll: lazyload}">
                 <div class="title-time time-one" data-bind="text: $parent.formatDateGroup(day)"></div>
                 <ul class="list-orders" data-bind="foreach: orderItems">
 
-                    <li data-bind="attr: {class: 'order-item bg-cl-active ' + status}, click: $parents[1].loadOrder,
-                    css: {'selected': entity_id==$parents[1].selectedOrder.call()}">
+                        <li data-bind="attr: {class: 'order-item bg-cl-active ' + status}, click: $parents[1].loadOrder,
+                        css: {'selected': entity_id==$parents[1].selectedOrder.call()}">
                         <div class="item">
                             <div class="id-order">
                                 <span class="id" data-bind="text: increment_id"/>
