@@ -58,9 +58,9 @@ class Create extends \Magento\Sales\Model\AdminOrder\Create
      */
     public function saveQuote()
     {
-        $this->collectRates();
-        $this->collectShippingRates();
         $this->quoteRepository->save($this->getQuote());
+        $this->collectShippingRates();
+        $this->collectRates();
         return $this;
     }
 

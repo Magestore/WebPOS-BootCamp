@@ -24,10 +24,7 @@ define([
             return Items.items();
         },
         prepareEditData: function(item,event){
-            if(this.isOnCartPage() == true){
-                // EditPopupModel.setItem(item);
-                // ShowEditCartItemPopup(event);
-            }
+
         },
         remove: function(item, event){
             if(item.saved_item()){
