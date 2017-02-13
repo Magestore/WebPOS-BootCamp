@@ -16,11 +16,6 @@ class Order extends \Magento\Sales\Model\Order implements \Magento\Sales\Model\E
      * @var \Bkademy\Webpos\Api\Data\Staff\StaffInterface
      */
     protected $_staff;
-
-    /**
-     * @var \Bkademy\Webpos\Model\ResourceModel\Payment\OrderPayment\CollectionFactory
-     */
-    protected $_orderPaymentCollectionFactory;
     
     /**
      *
@@ -53,13 +48,11 @@ class Order extends \Magento\Sales\Model\Order implements \Magento\Sales\Model\E
         \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $salesOrderCollectionFactory, 
         \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency, 
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productListFactory,
-        \Bkademy\Webpos\Model\ResourceModel\Payment\OrderPayment\CollectionFactory $orderPaymentCollectionFactory,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ){
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->_orderPaymentCollectionFactory = $orderPaymentCollectionFactory;
         parent::__construct(
             $context, 
             $registry, 
@@ -398,14 +391,6 @@ class Order extends \Magento\Sales\Model\Order implements \Magento\Sales\Model\E
     public function getWebposOrderPayments()
     {
         return;
-        if($this->getData(OrderInterface::WEBPOS_ORDER_PAYMENTS) == null){
-            $this->setData(
-                OrderInterface::WEBPOS_ORDER_PAYMENTS,
-                $this->_orderPaymentCollectionFactory->create()
-                    ->addFieldToFilter('order_id', $this->getEntityId())->getItems()
-            );
-        }
-        return $this->getData(OrderInterface::WEBPOS_ORDER_PAYMENTS);
     }
     
     /**
